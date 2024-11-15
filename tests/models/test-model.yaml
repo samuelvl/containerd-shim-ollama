@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-model
+spec:
+  selector:
+    matchLabels:
+      app: test-model
+  template:
+    metadata:
+      labels:
+        app: test-model
+    spec:
+      runtimeClassName: servingc-shim
+      containers:
+        - name: httpbin
+          image: docker.io/mccutchen/go-httpbin
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /status/200
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /status/200
+              port: http
+          resources: {}

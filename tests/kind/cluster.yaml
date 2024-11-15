@@ -1,0 +1,13 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: kind
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.runtime.v1.linux"]
+      shim_debug = true
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+      endpoint = ["https://mirror.gcr.io"]
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      discard_unpacked_layers = false
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.servingc]
+      runtime_type = "io.containerd.servingc.v2"
