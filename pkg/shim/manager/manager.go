@@ -170,6 +170,11 @@ func (manager) Start(ctx context.Context, id string, opts shim.StartOpts) (_ str
 		}
 	}
 
+	// INFO(samu): This is the command that will be executed:
+	// /usr/bin/containerd-shim-servingc-v2
+	//   -namespace k8s.io
+	//   -id        c8afdc76e735642c73e86a7988cb3831979d38cd890d6b3779b595418dea9272
+	//   -address   /run/containerd/containerd.sock
 	if err := cmd.Start(); err != nil {
 		f.Close()
 		return "", err

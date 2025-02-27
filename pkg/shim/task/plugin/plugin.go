@@ -3,8 +3,8 @@ package plugin
 import (
 	"github.com/containerd/containerd/pkg/shutdown"
 	"github.com/containerd/containerd/plugin"
-	"github.com/containerd/containerd/runtime/v2/runc/task"
 	"github.com/containerd/containerd/runtime/v2/shim"
+	"github.com/samuelvl/servingc/pkg/shim/task"
 )
 
 func init() {
