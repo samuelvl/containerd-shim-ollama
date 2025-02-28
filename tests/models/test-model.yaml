@@ -13,8 +13,9 @@ spec:
     spec:
       runtimeClassName: servingc-shim
       containers:
-        - name: httpbin
-          image: docker.io/mccutchen/go-httpbin
+        - name: qwen2
+          image: docker.io/mccutchen/go-httpbin # gpustack/qwen2:0.5b
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8080
