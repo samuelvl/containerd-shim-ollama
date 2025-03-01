@@ -14,7 +14,7 @@ Deploy your model using the `servingc-shim` runtime class:
 
 ```shell
 kubectl create namespace ai-models
-kubectl apply -n ai-models -f tests/models/test-model.yaml
+kubectl apply -n ai-models -f ./tests/models/qwen2-model.yaml
 ```
 
 Verify that the model is running:
@@ -35,6 +35,27 @@ Inspect the logs of the containerd runtime to see the `servingc` runtime in acti
 
 ```shell
 journalctl -f -u containerd
+```
+
+Find the model from the image snapshot:
+
+```shell
+find /var/lib/containerd/ -name '*.gguf'
+```
+
+Start the model locally on the node:
+
+```shell
+llama-server --port 8080 -c 8192 -m ${model}
+```
+
+```shell
+curl -X POST http://localhost:8080/v1/completions \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model": "qwen2:0.5b",
+        "prompt": "<|im_start|>user\nWhat is the Kubecon?\n<|im_end|>\n<|im_start|>assistant\n"
+    }' | jq '.'
 ```
 
 ## Clean-up

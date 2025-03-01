@@ -1,31 +1,24 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-model
+  name: qwen2-model
 spec:
   selector:
     matchLabels:
-      app: test-model
+      app: qwen2-model
   template:
     metadata:
       labels:
-        app: test-model
+        app: qwen2-model
     spec:
       runtimeClassName: servingc-shim
       containers:
         - name: qwen2
-          image: docker.io/mccutchen/go-httpbin # gpustack/qwen2:0.5b
+          image: svlcastai/qwen2:0.5b
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /status/200
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /status/200
-              port: http
           resources: {}
