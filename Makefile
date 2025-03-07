@@ -34,7 +34,7 @@ build-shim-%:
 clean-build:
 	rm -rf $(BINDIR)
 
-kind: kind-setup kind-shim-install kind-llamacpp-install
+kind: kind-setup kind-shim-install kind-ollama-install
 
 kind-setup:
 	$(KIND) create cluster --name $(KIND_CLUSTER_NAME) --config $(TESTDIR)/kind/cluster.yaml
@@ -46,24 +46,14 @@ kind-shim-install: build
     # Create the runtime class for the servingc shim
 	$(KUBECTL) apply -f $(TESTDIR)/servingc/runtime-class.yaml
 
-kind-llamacpp-install:
-    # Download and extract llama.cpp from github releases
+kind-ollama-install:
+ifeq ("$(wildcard $(BINDIR)/bin/ollama)","")	
+    # Download and extract ollama from github releases
 	$(CURL) --fail --show-error --location --progress-bar \
-        https://github.com/ggml-org/llama.cpp/releases/download/b4793/llama-b4793-bin-ubuntu-arm64.zip \
-        --output $(BINDIR)/llama.cpp.zip
-	$(UNZIP) -o $(BINDIR)/llama.cpp.zip -d $(BINDIR)/lamma.cpp
-    # Copy the shared libraries to the control plane node
-	for lib in libllama.so libllava_shared.so libggml-base.so libggml-cpu.so libggml.so libggml-rpc.so; do \
-		$(DOCKER) cp $(BINDIR)/lamma.cpp/build/bin/$$lib \
-			$(KIND_CLUSTER_NAME)-control-plane:/usr/local/lib/$$lib; \
-	done
-    # Copy the llama-server binary to the control plane node
-	$(DOCKER) cp $(BINDIR)/lamma.cpp/build/bin/llama-server \
-		$(KIND_CLUSTER_NAME)-control-plane:/usr/bin/llama-server
-    # Run ldconfig to update the shared library cache
-	$(DOCKER) exec $(KIND_CLUSTER_NAME)-control-plane ldconfig
-    # Install libgomp1 dependency
-	$(DOCKER) exec $(KIND_CLUSTER_NAME)-control-plane clean-install libgomp1
+    	"https://ollama.com/download/ollama-linux-arm64.tgz?version=0.5.13" | tar -xzf - -C $(BINDIR)
+endif
+    # Copy the ollama binary to the control plane node
+	$(DOCKER) cp $(BINDIR)/bin/ollama $(KIND_CLUSTER_NAME)-control-plane:/usr/bin/ollama
 
 kind-delete:
 	$(KIND) delete cluster --name $(KIND_CLUSTER_NAME)

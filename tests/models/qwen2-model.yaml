@@ -16,7 +16,14 @@ spec:
       containers:
         - name: qwen2
           image: svlcastai/qwen2:0.5b
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
+          env:
+            - name: SERVINGC_MODEL_NAME
+              value: Qwen2-0.5B-Instruct.Q5_K_M.gguf
+            - name: SERVINGC_MODEL_PORT
+              value: "8080"
+            - name: SERVINGC_MODEL_CTX_SIZE
+              value: "8192"
           ports:
             - name: http
               containerPort: 8080

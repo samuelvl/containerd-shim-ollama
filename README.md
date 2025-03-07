@@ -46,16 +46,18 @@ find /var/lib/containerd/ -name '*.gguf'
 Start the model locally on the node:
 
 ```shell
-llama-server --port 8080 -c 8192 -m ${model}
+ollama runner --port 8080 --ctx-size 8192 --model ${model}
 ```
 
+Ask some questions to the model:
+
 ```shell
-curl -X POST http://localhost:8080/v1/completions \
+curl -X POST http://localhost:8080/completion \
     -H "Content-Type: application/json" \
     -d '{
         "model": "qwen2:0.5b",
         "prompt": "<|im_start|>user\nWhat is the Kubecon?\n<|im_end|>\n<|im_start|>assistant\n"
-    }' | jq '.'
+    }' | jq -c '.content' | tr -d ',"\n'
 ```
 
 ## Clean-up
@@ -76,3 +78,5 @@ make clean
     - https://github.com/containerd/containerd/blob/main/core/runtime/v2/README.md
 - Kind example
     - https://github.com/bluebrown/kind-wasmtime
+- Digging into runc
+    - https://blog.quarkslab.com/digging-into-runtimes-runc.html

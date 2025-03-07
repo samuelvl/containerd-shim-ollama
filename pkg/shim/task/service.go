@@ -20,8 +20,12 @@ package task
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/moby/sys/userns"
@@ -39,6 +43,7 @@ import (
 	"github.com/containerd/log"
 	"github.com/containerd/ttrpc"
 	"github.com/containerd/typeurl/v2"
+	specs "github.com/opencontainers/runtime-spec/specs-go"
 
 	"github.com/containerd/containerd/v2/cmd/containerd-shim-runc-v2/process"
 	"github.com/containerd/containerd/v2/cmd/containerd-shim-runc-v2/runc"
@@ -140,6 +145,8 @@ type service struct {
 	exitSubscribers map[*map[int][]runcC.Exit]struct{}
 
 	shutdown shutdown.Service
+
+	tasks int
 }
 
 type containerProcess struct {
@@ -230,6 +237,52 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *
 	s.lifecycleMu.Unlock()
 	defer cleanup()
 
+	log.G(ctx).WithField("id", r.ID).Debugf("creating task: %+v", r)
+
+	// skip pause container
+	if s.tasks > 0 {
+		var config *specs.Spec
+		configPath := filepath.Join(r.Bundle, "config.json")
+		configFile, err := os.ReadFile(configPath)
+		if err != nil {
+			return nil, err
+		}
+		if err := json.Unmarshal(configFile, &config); err != nil {
+			return nil, err
+		}
+
+		config.Mounts = append(config.Mounts, specs.Mount{
+			Source:      "/usr/bin/ollama",
+			Destination: "/usr/bin/ollama",
+			Type:        "bind",
+			Options:     []string{"rbind", "ro"},
+		})
+
+		config.Process.Args = []string{
+			"ollama",
+			"runner",
+			"--model",
+			getTaskEnv("SERVINGC_MODEL_NAME", config.Process.Env),
+			"--port",
+			getTaskEnv("SERVINGC_MODEL_PORT", config.Process.Env),
+			"--ctx-size",
+			getTaskEnv("SERVINGC_MODEL_CTX_SIZE", config.Process.Env),
+		}
+
+		new, err := json.Marshal(config)
+		if err != nil {
+			return nil, err
+		}
+
+		log.G(ctx).WithField("id", r.ID).Debugf("rendered config: %s", string(new))
+
+		err = os.WriteFile(configPath, new, 0644)
+		if err != nil {
+			return nil, err
+		}
+	}
+	s.tasks++
+
 	container, err := runc.NewContainer(ctx, s.platform, r)
 	if err != nil {
 		return nil, err
@@ -260,6 +313,75 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *
 	return &taskAPI.CreateTaskResponse{
 		Pid: uint32(container.Pid()),
 	}, nil
+}
+
+func getTaskEnv(key string, env []string) string {
+	for _, e := range env {
+		if strings.HasPrefix(e, key) {
+			return strings.Split(e, "=")[1]
+		}
+	}
+	return ""
+}
+
+// CopyFile copies a file from src to dst. If src and dst files exist, and are
+// the same, then return success. Otherise, attempt to create a hard link
+// between the two files. If that fail, copy the file contents from src to dst.
+func CopyFile(src, dst string) (err error) {
+	sfi, err := os.Stat(src)
+	if err != nil {
+		return
+	}
+	if !sfi.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories,
+		// symlinks, devices, etc.)
+		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", sfi.Name(), sfi.Mode().String())
+	}
+	dfi, err := os.Stat(dst)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return
+		}
+	} else {
+		if !(dfi.Mode().IsRegular()) {
+			return fmt.Errorf("CopyFile: non-regular destination file %s (%q)", dfi.Name(), dfi.Mode().String())
+		}
+		if os.SameFile(sfi, dfi) {
+			return
+		}
+	}
+	if err = os.Link(src, dst); err == nil {
+		return
+	}
+	err = copyFileContents(src, dst)
+	return
+}
+
+// copyFileContents copies the contents of the file named src to the file named
+// by dst. The file will be created if it does not already exist. If the
+// destination file exists, all it's contents will be replaced by the contents
+// of the source file.
+func copyFileContents(src, dst string) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
+	return
 }
 
 func (s *service) RegisterTTRPC(server *ttrpc.Server) error {

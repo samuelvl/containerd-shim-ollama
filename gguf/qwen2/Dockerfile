@@ -1,6 +1,6 @@
 # syntax=svlcastai/gguf-packer:arm64
 
-ARG        BASE=scratch
+ARG        BASE=cgr.dev/chainguard/glibc-dynamic
 ARG        QUANTIZE_TYPE=Q5_K_M
 ARG        CHAT_TEMPLATE="{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
 
