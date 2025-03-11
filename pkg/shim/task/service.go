@@ -251,6 +251,23 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *
 			return nil, err
 		}
 
+		// Create the temp directory for the container
+		tempDir := filepath.Join("/tmp", r.ID)
+		if err := os.MkdirAll(tempDir, 0755); err != nil {
+			return nil, fmt.Errorf("failed to create temp directory: %w", err)
+		}
+
+		var (
+			modelPath = getTaskEnv("OLLAMA_MODEL_PATH", config.Process.Env)
+			modelName = getTaskEnv("OLLAMA_MODEL_NAME", config.Process.Env)
+		)
+
+		modelfile := fmt.Sprintf("FROM %s", modelPath)
+		err = os.WriteFile(filepath.Join(tempDir, "Modelfile"), []byte(modelfile), 0644)
+		if err != nil {
+			return nil, err
+		}
+
 		config.Mounts = append(config.Mounts, specs.Mount{
 			Source:      "/usr/bin/ollama",
 			Destination: "/usr/bin/ollama",
@@ -258,15 +275,22 @@ func (s *service) Create(ctx context.Context, r *taskAPI.CreateTaskRequest) (_ *
 			Options:     []string{"rbind", "ro"},
 		})
 
+		config.Mounts = append(config.Mounts, specs.Mount{
+			Source:      filepath.Join(tempDir, "Modelfile"),
+			Destination: "/tmp/Modelfile",
+			Type:        "bind",
+			Options:     []string{"rbind", "ro"},
+		})
+
 		config.Process.Args = []string{
-			"ollama",
-			"runner",
-			"--model",
-			getTaskEnv("SERVINGC_MODEL_NAME", config.Process.Env),
-			"--port",
-			getTaskEnv("SERVINGC_MODEL_PORT", config.Process.Env),
-			"--ctx-size",
-			getTaskEnv("SERVINGC_MODEL_CTX_SIZE", config.Process.Env),
+			"/bin/bash",
+			"-c",
+			strings.Join([]string{
+				"ollama serve &",
+				"while ! ollama ps > /dev/null 2>&1; do sleep 1; done",
+				"ollama create " + modelName + " --file /tmp/Modelfile",
+				"tail -f /dev/null",
+			}, "\n"),
 		}
 
 		new, err := json.Marshal(config)

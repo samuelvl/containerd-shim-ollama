@@ -23,6 +23,16 @@ Verify that the model is running:
 kubectl get pods -n ai-models
 ```
 
+Ask some questions to the model from a pod running in the cluster:
+
+```shell
+curl http://qwen2.ai-models.svc.cluster.local/api/generate -d '{
+    "model": "qwen2:latest",
+    "prompt": "What is the Kubecon?",
+    "stream": false
+}' | jq -r '.response'
+```
+
 ## Troubleshooting
 
 Connect to the kind node:
@@ -47,17 +57,6 @@ Start the model locally on the node:
 
 ```shell
 ollama runner --port 8080 --ctx-size 8192 --model ${model}
-```
-
-Ask some questions to the model:
-
-```shell
-curl -X POST http://localhost:8080/completion \
-    -H "Content-Type: application/json" \
-    -d '{
-        "model": "qwen2:0.5b",
-        "prompt": "<|im_start|>user\nWhat is the Kubecon?\n<|im_end|>\n<|im_start|>assistant\n"
-    }' | jq -c '.content' | tr -d ',"\n'
 ```
 
 ## Clean-up
