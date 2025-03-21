@@ -31,9 +31,6 @@
         "env": [
             "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "HOSTNAME=qwen2-model-bc48477d7-hk56b",
-            "SERVINGC_MODEL_CTX_SIZE=8192",
-            "SERVINGC_MODEL_NAME=Qwen2-0.5B-Instruct.Q5_K_M.gguf",
-            "SERVINGC_MODEL_PORT=8080",
             "KUBERNETES_PORT_443_TCP_PORT=443",
             "KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1",
             "KUBERNETES_SERVICE_HOST=10.96.0.1",

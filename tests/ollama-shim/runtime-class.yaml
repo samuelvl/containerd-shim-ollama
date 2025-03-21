@@ -1,0 +1,7 @@
+---
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: ollama-shim
+# mapped to /usr/bin/containerd-shim-ollama-v2 runtime
+handler: ollama

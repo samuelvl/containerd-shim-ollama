@@ -1,16 +1,16 @@
-# servingc
+# containerd-shim-ollama
 
 Deploy a containerd runtime shim for serving AI models with Ollama.
 
 ## Setup
 
-Create a kind cluster with the `servingc` runtime:
+Create a kind cluster with the `ollama` shim:
 
 ```shell
 make kind
 ```
 
-Deploy your model using the `servingc-shim` runtime class:
+Deploy your model using the `ollama-shim` runtime class:
 
 ```shell
 kubectl create namespace ai-models
@@ -38,10 +38,10 @@ curl http://qwen2.ai-models.svc.cluster.local/api/generate -d '{
 Connect to the kind node:
 
 ```shell
-docker exec -it servingc-control-plane bash
+docker exec -it ollama-shim-control-plane bash
 ```
 
-Inspect the logs of the containerd runtime to see the `servingc` runtime in action:
+Inspect the logs of the containerd runtime to see the `ollama` shim in action:
 
 ```shell
 journalctl -f -u containerd

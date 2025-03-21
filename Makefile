@@ -16,7 +16,8 @@ GO_ARCH = $(shell go env GOARCH)
 
 # Kind flags
 KIND ?= kind
-KIND_CLUSTER_NAME ?= servingc
+KIND_CLUSTER_NAME ?= ollama-shim
+
 KUBECTL ?= kubectl
 
 # Docker flags
@@ -29,7 +30,7 @@ UNZIP ?= unzip
 build: $(foreach arch,$(GO_SUPPORTED_ARCH),build-shim-$(arch))
 
 build-shim-%:
-	$(GO_FLAGS) GOARCH=$* $(GO) build -o $(BINDIR)/containerd-shim-servingc-$* cmd/shim/main.go
+	$(GO_FLAGS) GOARCH=$* $(GO) build -o $(BINDIR)/containerd-shim-ollama-$* cmd/shim/main.go
 
 clean-build:
 	rm -rf $(BINDIR)
@@ -40,11 +41,11 @@ kind-setup:
 	$(KIND) create cluster --name $(KIND_CLUSTER_NAME) --config $(TESTDIR)/kind/cluster.yaml
 
 kind-shim-install: build
-    # Copy the servingc shim binary to the control plane node
-	$(DOCKER) cp $(BINDIR)/containerd-shim-servingc-$(GO_ARCH) \
-		$(KIND_CLUSTER_NAME)-control-plane:/usr/bin/containerd-shim-servingc-v2
-    # Create the runtime class for the servingc shim
-	$(KUBECTL) apply -f $(TESTDIR)/servingc/runtime-class.yaml
+    # Copy the ollama shim binary to the control plane node
+	$(DOCKER) cp $(BINDIR)/containerd-shim-ollama-$(GO_ARCH) \
+		$(KIND_CLUSTER_NAME)-control-plane:/usr/bin/containerd-shim-ollama-v2
+    # Create the runtime class for the ollama shim
+	$(KUBECTL) apply -f $(TESTDIR)/ollama-shim/runtime-class.yaml
 
 kind-ollama-install:
 ifeq ("$(wildcard $(BINDIR)/bin/ollama)","")	

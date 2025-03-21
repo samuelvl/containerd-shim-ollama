@@ -6,7 +6,7 @@ import (
 	"github.com/containerd/containerd/v2/plugins"
 	"github.com/containerd/plugin"
 	"github.com/containerd/plugin/registry"
-	"github.com/samuelvl/servingc/pkg/shim/task"
+	"github.com/samuelvl/containerd-shim-runc/pkg/shim/task"
 )
 
 func init() {

@@ -1,4 +1,4 @@
-module github.com/samuelvl/servingc
+module github.com/samuelvl/containerd-shim-runc
 
 go 1.23.4
 

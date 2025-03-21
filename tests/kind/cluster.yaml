@@ -9,5 +9,5 @@ containerdConfigPatches:
       endpoint = ["https://mirror.gcr.io"]
     [plugins."io.containerd.grpc.v1.cri".containerd]
       discard_unpacked_layers = false
-    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.servingc]
-      runtime_type = "io.containerd.servingc.v2"
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.ollama]
+      runtime_type = "io.containerd.ollama.v2"

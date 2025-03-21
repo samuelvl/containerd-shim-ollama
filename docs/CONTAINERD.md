@@ -78,7 +78,7 @@ The logs show the result with IP `10.244.0.11`, interfaces (`eth0`, `lo`, `veth`
 ## 3. OCI Runtime Selection & Container Spec Generation
 
 ```
-time="2025-02-27T20:28:41.329128849Z" level=debug msg="use OCI runtime {Type:io.containerd.servingc.v2...}"
+time="2025-02-27T20:28:41.329128849Z" level=debug msg="use OCI runtime {Type:io.containerd.ollama.v2...}"
 time="2025-02-27T20:28:41.329392680Z" level=debug msg="sandbox container spec: (*specs.Spec)..."
 ```
 
