@@ -14,7 +14,7 @@ Deploy your model using the `ollama-shim` runtime class:
 
 ```shell
 kubectl create namespace ai-models
-kubectl apply -n ai-models -f ./tests/models/qwen2-model.yaml
+kubectl apply -n ai-models -f ./manifests/models/qwen2-model.yaml
 ```
 
 Verify that the model is running:

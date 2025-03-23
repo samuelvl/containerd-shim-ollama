@@ -7,7 +7,7 @@ ROOTDIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 # Base path used to install
 BINDIR ?= $(ROOTDIR)/.bin
-TESTDIR ?= $(ROOTDIR)/tests
+MANIFESTDIR ?= $(ROOTDIR)/manifests
 
 # Go build flags
 GO_FLAGS ?= CGO_ENABLED=0 GOOS=linux
@@ -38,7 +38,7 @@ clean-build:
 kind: kind-setup kind-shim-install kind-ollama-install
 
 kind-setup:
-	$(KIND) create cluster --name $(KIND_CLUSTER_NAME) --config $(TESTDIR)/kind/cluster.yaml
+	$(KIND) create cluster --name $(KIND_CLUSTER_NAME) --config $(MANIFESTDIR)/kind/cluster.yaml
 
 kind-shim-install: build
     # Copy the ollama shim binary to the control plane node
@@ -47,7 +47,7 @@ kind-shim-install: build
 		$(KIND_CLUSTER_NAME)-control-plane:/usr/bin/containerd-shim-ollama-v2
 	@echo "\033[32mCreate the runtime class for Ollama's shim\033[0m"
     # Create the runtime class for the ollama shim
-	$(KUBECTL) apply -f $(TESTDIR)/ollama-shim/runtime-class.yaml
+	$(KUBECTL) apply -f $(MANIFESTDIR)/ollama-shim/runtime-class.yaml
 
 kind-ollama-install:
 ifeq ("$(wildcard $(BINDIR)/bin/ollama)","")	

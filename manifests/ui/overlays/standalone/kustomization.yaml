@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+- kubeflow-dashboard-rbac.yaml
+
+patches:
+- path: ollama-ui-deployment.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: ollama-ui
+    version: v1

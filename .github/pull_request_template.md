@@ -17,6 +17,6 @@
 
 If you have UI changes
 
-<!--- You can ignore these if you are doing Go Model Registry REST server, MR Python client, manifest, controller, internal logic, etc changes; aka non-UI / visual changes -->
+<!--- You can ignore these if you are doing Go REST server, manifest, controller, internal logic, etc changes; aka non-UI / visual changes -->
 - [ ] The developer has added tests or explained why testing cannot be added.
 - [ ] Included any necessary screenshots or gifs if it was a UI change.
