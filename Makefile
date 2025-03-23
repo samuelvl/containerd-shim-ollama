@@ -42,18 +42,22 @@ kind-setup:
 
 kind-shim-install: build
     # Copy the ollama shim binary to the control plane node
+	@echo "\033[32mCopying Ollama Shim binary to control plane node...\033[0m"
 	$(DOCKER) cp $(BINDIR)/containerd-shim-ollama-$(GO_ARCH) \
 		$(KIND_CLUSTER_NAME)-control-plane:/usr/bin/containerd-shim-ollama-v2
+	@echo "\033[32mCreate the runtime class for Ollama's shim\033[0m"
     # Create the runtime class for the ollama shim
 	$(KUBECTL) apply -f $(TESTDIR)/ollama-shim/runtime-class.yaml
 
 kind-ollama-install:
 ifeq ("$(wildcard $(BINDIR)/bin/ollama)","")	
     # Download and extract ollama from github releases
+	@echo "\033[32mDownload and extract ollama from github releases...\033[0m"
 	$(CURL) --fail --show-error --location --progress-bar \
     	"https://ollama.com/download/ollama-linux-arm64.tgz?version=0.5.13" | tar -xzf - -C $(BINDIR)
 endif
     # Copy the ollama binary to the control plane node
+	@echo "\033[32mCopying ollama binary to the control plane node...\033[0m"
 	$(DOCKER) cp $(BINDIR)/bin/ollama $(KIND_CLUSTER_NAME)-control-plane:/usr/bin/ollama
 
 kind-delete:

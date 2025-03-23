@@ -20,13 +20,19 @@ kubectl apply -n ai-models -f ./tests/models/qwen2-model.yaml
 Verify that the model is running:
 
 ```shell
-kubectl get pods -n ai-models
+kubectl wait --for=condition=available -n ai-models deployment/qwen2 --timeout=1m
 ```
 
-Ask some questions to the model from a pod running in the cluster:
+Port-forward the model service to your local machine:
 
 ```shell
-curl http://qwen2.ai-models.svc.cluster.local/api/generate -d '{
+kubectl port-forward -n ai-models svc/qwen2 8080:80
+```
+
+Ask some questions to the model from your local machine (in a new terminal):
+
+```shell
+curl http://localhost:8080/api/generate -d '{
     "model": "qwen2:latest",
     "prompt": "What is the Kubecon?",
     "stream": false

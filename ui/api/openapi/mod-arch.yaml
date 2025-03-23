@@ -1,0 +1,585 @@
+openapi: 3.0.3
+info:
+  title: Ollama Mod Arch REST API
+  version: 1.0.0
+  description: REST API for Ollama PoC based on a modular architecture
+  license:
+    name: Apache 2.0
+    url: "https://www.apache.org/licenses/LICENSE-2.0"
+servers:
+  - url: "https://localhost:8080"
+  - url: "http://localhost:8080"
+paths:
+  /api/v1/namespaces:
+    summary: Path used to get available namespaces.
+    description: >-
+      The REST endpoint/path used to list available namespaces.
+    get:
+      tags:
+        - K8SOperation
+      responses:
+        "200":
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    description: Metadata about the response
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: default-namespace
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      operationId: getNamespaces
+      summary: Get Available Namespaces
+      description: Returns available namespaces in the cluster.
+  /api/v1/healthcheck:
+    summary: Path targeted for healthcheck purposes.
+    description: >-
+      The REST endpoint/path used to allow a healthcheck update.
+    get:
+      tags:
+        - K8SOperation
+      responses:
+        "200":
+          description: 'Ok'
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      operationId: healthcheck
+      summary: HealthCheck
+      description: HealthCheck endpoint.
+  /api/v1/user:
+    summary: Path used to Retrieve a user based on the header.
+    description: >-
+      The REST endpoint/path used pass all the config information needed for the UI.
+    get:
+      tags:
+        - K8SOperation
+      parameters:
+        - $ref: "#/components/parameters/kubeflowUserId"
+      responses:
+        "200":
+          $ref: "#/components/responses/ConfigResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      operationId: getConfig
+      summary: Get configuration info
+      description: Gets the configuration information needed for the UI [TBD]
+  /api/v1/models:
+    summary: Path used to get available models.
+    description: >-
+      The REST endpoint/path used to list available Ollama models.
+    get:
+      tags:
+        - K8SOperation
+      responses:
+        "200":
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    description: Metadata about the response
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OllamaModel"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      operationId: getModels
+      summary: Get Available Models
+      description: Returns available Ollama models.
+  /api/v1/model/{modelId}:
+    summary: Path used to update a specific model.
+    description: >-
+      The REST endpoint/path used to patch a specific Ollama model.
+    patch:
+      tags:
+        - K8SOperation
+      parameters:
+        - $ref: "#/components/parameters/modelId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OllamaModelPatch"
+        required: true
+      responses:
+        "200":
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    description: Metadata about the response
+                  data:
+                    $ref: "#/components/schemas/OllamaModel"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      operationId: patchModel
+      summary: Update a specific model
+      description: Updates an existing Ollama model with partial data.
+components:
+  schemas:
+    Config:
+      required:
+        - userId
+        - clusterAdmin
+      type: object
+      properties:
+        userId:
+          type: string
+          example: user@example.com
+        clusterAdmin:
+          type: boolean
+          example: true
+    MetadataValue:
+      oneOf:
+        - $ref: "#/components/schemas/MetadataIntValue"
+        - $ref: "#/components/schemas/MetadataDoubleValue"
+        - $ref: "#/components/schemas/MetadataStringValue"
+        - $ref: "#/components/schemas/MetadataStructValue"
+        - $ref: "#/components/schemas/MetadataProtoValue"
+        - $ref: "#/components/schemas/MetadataBoolValue"
+      discriminator:
+        propertyName: metadataType
+        mapping:
+          MetadataBoolValue: "#/components/schemas/MetadataBoolValue"
+          MetadataDoubleValue: "#/components/schemas/MetadataDoubleValue"
+          MetadataIntValue: "#/components/schemas/MetadataIntValue"
+          MetadataProtoValue: "#/components/schemas/MetadataProtoValue"
+          MetadataStringValue: "#/components/schemas/MetadataStringValue"
+          MetadataStructValue: "#/components/schemas/MetadataStructValue"
+      description: A value in properties.
+    MetadataIntValue:
+      description: An integer (int64) property value.
+      type: object
+      required:
+        - metadataType
+        - int_value
+      properties:
+        int_value:
+          format: int64
+          type: string
+        metadataType:
+          type: string
+          example: MetadataIntValue
+          default: MetadataIntValue
+    MetadataDoubleValue:
+      description: A double property value.
+      type: object
+      required:
+        - metadataType
+        - double_value
+      properties:
+        double_value:
+          format: double
+          type: number
+        metadataType:
+          type: string
+          example: MetadataDoubleValue
+          default: MetadataDoubleValue
+    MetadataStringValue:
+      description: A string property value.
+      type: object
+      required:
+        - metadataType
+        - string_value
+      properties:
+        string_value:
+          type: string
+        metadataType:
+          type: string
+          example: MetadataStringValue
+          default: MetadataStringValue
+    MetadataStructValue:
+      description: A struct property value.
+      type: object
+      required:
+        - metadataType
+        - struct_value
+      properties:
+        struct_value:
+          description: Base64 encoded bytes for struct value
+          type: string
+        metadataType:
+          type: string
+          example: MetadataStructValue
+          default: MetadataStructValue
+    MetadataProtoValue:
+      description: A proto property value.
+      type: object
+      required:
+        - metadataType
+        - type
+        - proto_value
+      properties:
+        type:
+          description: url describing proto value
+          type: string
+        proto_value:
+          description: Base64 encoded bytes for proto value
+          type: string
+        metadataType:
+          type: string
+          example: MetadataProtoValue
+          default: MetadataProtoValue
+    MetadataBoolValue:
+      description: A bool property value.
+      type: object
+      required:
+        - metadataType
+        - bool_value
+      properties:
+        bool_value:
+          type: boolean
+        metadataType:
+          type: string
+          example: MetadataBoolValue
+          default: MetadataBoolValue
+    BaseResource:
+      allOf:
+        - $ref: "#/components/schemas/BaseResourceCreate"
+        - type: object
+          properties:
+            id:
+              format: int64
+              description: Output only. The unique server generated id of the resource.
+              type: string
+              readOnly: true
+            createTimeSinceEpoch:
+              format: int64
+              description: Output only. Create time of the resource in millisecond since epoch.
+              type: string
+              readOnly: true
+            lastUpdateTimeSinceEpoch:
+              format: int64
+              description: |-
+                Output only. Last update time of the resource since epoch in millisecond
+                since epoch.
+              type: string
+              readOnly: true
+    BaseResourceCreate:
+      allOf:
+        - $ref: "#/components/schemas/BaseResourceUpdate"
+        - type: object
+          properties:
+            name:
+              description: |-
+                The client provided name of the artifact. This field is optional. If set,
+                it must be unique among all the artifacts of the same artifact type within
+                a database instance and cannot be changed once set.
+              type: string
+    BaseResourceUpdate:
+      type: object
+      properties:
+        customProperties:
+          description: User provided custom properties which are not defined by its type.
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/MetadataValue"
+        description:
+          description: |-
+            An optional description about the resource.
+          type: string
+        externalId:
+          description: |-
+            The external id that come from the clients’ system. This field is optional.
+            If set, it must be unique among all resources within a database instance.
+          type: string
+    BaseResourceList:
+      required:
+        - nextPageToken
+        - pageSize
+        - size
+      type: object
+      properties:
+        nextPageToken:
+          description: Token to use to retrieve next page of results.
+          type: string
+        pageSize:
+          format: int32
+          description: Maximum number of resources to return in the result.
+          type: integer
+        size:
+          format: int32
+          description: Number of items in result list.
+          type: integer
+    Error:
+      description: Error code and message.
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          description: Error code
+          type: string
+        message:
+          description: Error message
+          type: string
+    SortOrder:
+      description: Supported sort direction for ordering result entities.
+      enum:
+        - ASC
+        - DESC
+      type: string
+    OrderByField:
+      description: Supported fields for ordering result entities.
+      enum:
+        - CREATE_TIME
+        - LAST_UPDATE_TIME
+        - Id
+      type: string
+    StatusModel:
+      type: string
+      enum:
+        - PENDING
+        - READY
+        - ERROR
+        - UPDATING
+      description: The status of an Ollama model
+    ModelRegistryCustomProperties:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/MetadataValue"
+      description: Custom properties for model registry
+    ModelBase:
+      type: object
+      required:
+        - id
+        - name
+        - createTimeSinceEpoch
+        - lastUpdateTimeSinceEpoch
+        - customProperties
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the model
+        name:
+          type: string
+          description: Name of the model
+        externalID:
+          type: string
+          description: External identifier of the model
+        description:
+          type: string
+          description: Description of the model
+        createTimeSinceEpoch:
+          type: string
+          description: Time when the model was created (milliseconds since epoch)
+        lastUpdateTimeSinceEpoch:
+          type: string
+          description: Time when the model was last updated (milliseconds since epoch)
+        customProperties:
+          $ref: "#/components/schemas/ModelRegistryCustomProperties"
+        image:
+          type: string
+          description: Image URL or identifier for the model
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the model
+    OllamaModel:
+      allOf:
+        - $ref: "#/components/schemas/ModelBase"
+        - type: object
+          required:
+            - status
+          properties:
+            author:
+              type: string
+              description: Author of the model
+            owner:
+              type: string
+              description: Owner of the model
+            status:
+              $ref: "#/components/schemas/StatusModel"
+    OllamaModelPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the model
+        description:
+          type: string
+          description: Description of the model
+        customProperties:
+          $ref: "#/components/schemas/ModelRegistryCustomProperties"
+        image:
+          type: string
+          description: Image URL or identifier for the model
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the model
+        author:
+          type: string
+          description: Author of the model
+        owner:
+          type: string
+          description: Owner of the model
+        status:
+          $ref: "#/components/schemas/StatusModel"
+  responses:
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: The specified resource was not found
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Bad Request parameters
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Unauthorized
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Unexpected internal server error
+    ConfigResponse:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                type: object
+                description: Metadata about the response
+              data:
+                $ref: "#/components/schemas/Config"
+      description: A response containing a list of ModelArtifact entities.
+  parameters:
+    kubeflowUserId:
+      in: header
+      name: kubeflow-userid
+      schema:
+        type: string
+      required: true
+    id:
+      name: id
+      description: The ID of resource.
+      schema:
+        type: string
+      in: path
+      required: true
+    name:
+      examples:
+        name:
+          value: entity-name
+      name: name
+      description: Name of entity to search.
+      schema:
+        type: string
+      in: query
+      required: false
+    externalId:
+      examples:
+        externalId:
+          value: "10"
+      name: externalId
+      description: External ID of entity to search.
+      schema:
+        type: string
+      in: query
+      required: false
+    parentResourceId:
+      examples:
+        parentResourceId:
+          value: "10"
+      name: parentResourceId
+      description: ID of the parent resource to use for search.
+      schema:
+        type: string
+      in: query
+      required: false
+    pageSize:
+      examples:
+        pageSize:
+          value: "100"
+      name: pageSize
+      description: Number of entities in each page.
+      schema:
+        type: string
+      in: query
+      required: false
+    nextPageToken:
+      name: nextPageToken
+      description: Token to use to retrieve next page of results.
+      schema:
+        type: string
+      in: query
+      required: false
+    orderBy:
+      style: form
+      explode: true
+      examples:
+        orderBy:
+          value: Id
+      name: orderBy
+      description: Specifies the order by criteria for listing entities.
+      schema:
+        $ref: "#/components/schemas/OrderByField"
+      in: query
+      required: false
+    sortOrder:
+      style: form
+      explode: true
+      examples:
+        sortOrder:
+          value: DESC
+      name: sortOrder
+      description: "Specifies the sort order for listing entities, defaults to ASC."
+      schema:
+        $ref: "#/components/schemas/SortOrder"
+      in: query
+      required: false
+    modelId:
+      name: modelId
+      description: The ID of the model.
+      schema:
+        type: string
+      in: path
+      required: true
+  securitySchemes:
+    Bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+      description: Bearer JWT scheme
+security:
+  - Bearer: []
+tags:
+  - name: Ollama Service
+    description: Ollama Service API
+  - name: K8SOperation
+    description: Operation performed in Kubernetes
