@@ -1,7 +1,7 @@
 {
-  "name": "model-registry-ui",
+  "name": "ollama-ui",
   "version": "0.0.1",
-  "description": "An user interface for Kubeflow Model Registry project",
+  "description": "An user interface for Kubeflow Ollama project",
   "repository": "https://github.com/kubeflow/model-registry.git",
   "homepage": "https://github.com/kubeflow/model-registry",
   "license": "Apache-2.0",

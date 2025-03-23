@@ -1,11 +1,11 @@
 [contributing guidelines]: CONTRIBUTING.md
 [Dev setup & Requirements]: docs/dev-setup.md
-[Model Registry UI documentation]: docs/README.md
+[Ollama UI documentation]: docs/README.md
 [issue]: https://github.com/kubeflow/model-registry/issues/new/choose
 
-# Kubeflow Model Registry UI
+# Kubeflow Ollama UI
 
-The Kubeflow Model Registry UI is a standalone web app for Kubeflow Model Registry.
+The Ollama UI is a standalone web app for Kubeflow Ollama.
 
 ## Contributing
 
@@ -15,7 +15,7 @@ We do have some [contributing guidelines] you can follow.
 
 ## Documentation
 
-Read more about the Model Registry UI in one of our documentation links.
+Read more about the Ollama UI in one of our documentation links.
 
 * [Dev setup & Requirements]
-* [Model Registry UI documentation]
+* [Ollama UI documentation]

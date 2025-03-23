@@ -21,12 +21,18 @@ const Models: React.FC<ModelsProps> = ({ ...pageProps }) => (
     {...pageProps}
     title={
       !isMUITheme() ? (
-        <TitleWithIcon title="ModelS" objectType={ProjectObjectType.registeredModels} />
+        <TitleWithIcon title="Model Catalog" objectType={ProjectObjectType.registeredModels} />
       ) : (
-        'Models'
+        'Model Catalog'
       )
     }
-    description={!isMUITheme() ? 'Select a model. Models ....' : <Divider />}
+    description={
+      !isMUITheme() ? (
+        'Select a model from the list to deploy it in a cluster and start a new prompt session.'
+      ) : (
+        <Divider />
+      )
+    }
     loaded
     provideChildrenPadding
     removeChildrenTopPadding

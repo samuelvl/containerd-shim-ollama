@@ -1,6 +1,5 @@
 import React from 'react';
-import { Divider, EmptyState, EmptyStateBody, EmptyStateVariant } from '@patternfly/react-core';
-import { PlusCircleIcon } from '@patternfly/react-icons';
+import { Divider } from '@patternfly/react-core';
 import ApplicationsPage from '~/shared/components/ApplicationsPage';
 import { isMUITheme } from '~/shared/utilities/const';
 import TitleWithIcon from '~/shared/components/design/TitleWithIcon';
@@ -20,20 +19,8 @@ const AdminSettings: React.FC = () => (
     }
     loaded
     empty
-    description={!isMUITheme() ? 'Manage settings about deployments.' : <Divider />}
-    errorMessage="Unable to load model registries."
-    emptyStatePage={
-      <EmptyState
-        headingLevel="h5"
-        icon={PlusCircleIcon}
-        titleText="No model registries"
-        variant={EmptyStateVariant.lg}
-        data-testid="mr-settings-empty-state"
-      >
-        <EmptyStateBody>TBD</EmptyStateBody>
-      </EmptyState>
-    }
-    provideChildrenPadding
+    description={!isMUITheme() ? 'Manage settings about ollama models.' : <Divider />}
+    errorMessage="Unable to load settings"
   />
 );
 

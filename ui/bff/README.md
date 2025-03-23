@@ -78,11 +78,6 @@ The mock Kubernetes environment is activated when the environment variable `MOCK
 - **Groups**:
   - `dora-service-group` (has access to `model-registry-dora` inside `dora-namespace`)
   - `dora-namespace-group` (has access to the `dora-namespace`)
-- **Services (Model Registries)**:
-  - `model-registry`: resides in the `kubeflow` namespace with the label `component: model-registry`.
-  - `model-registry-one`: resides in the `kubeflow` namespace with the label `component: model-registry`.
-  - `non-model-registry`: resides in the `kubeflow` namespace _without_ the label `component: model-registry`.
-  - `model-registry-dora`: resides in the `dora-namespace` namespace with the label `component: model-registry`.
 
 #### 2. How BFF authorization works for kubeflow-userid and kubeflow-groups?
 

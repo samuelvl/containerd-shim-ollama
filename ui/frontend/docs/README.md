@@ -3,9 +3,9 @@
 [Testing]: testing.md
 
 
-# Model Registry UI Documentation
+# Ollama UI Documentation
 
-This is the general documentation of the Model Registry UI.
+This is the general documentation of the Ollama UI.
 
 ## Developer Readmes
 

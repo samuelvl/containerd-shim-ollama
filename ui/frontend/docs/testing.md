@@ -1,4 +1,4 @@
-# Model Registry UI Testing
+# Ollama UI Testing
 
 ## Cypress Tests
 
