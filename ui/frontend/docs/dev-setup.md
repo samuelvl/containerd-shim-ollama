@@ -19,7 +19,7 @@ This project requires the following tools to be installed on your system:
 2. Within the repo context, install project dependencies
 
      ```bash
-     cd model-registry/clients/ui/frontend && npm install
+     cd containerd-shim-ollama/ui/frontend && npm install
      ```
 
 ### Build project

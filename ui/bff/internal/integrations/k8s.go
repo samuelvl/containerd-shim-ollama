@@ -21,7 +21,7 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
-const ComponentLabelValue = "model-registry"
+const ComponentLabelValue = "ollama"
 
 type KubernetesClientInterface interface {
 	GetServiceNames(sessionCtx context.Context, namespace string) ([]string, error)

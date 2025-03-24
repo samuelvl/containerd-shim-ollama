@@ -34,6 +34,10 @@ dev-install-dependencies:
 dev-bff:
 	cd bff && make run PORT=4000 MOCK_K8S_CLIENT=true MOCK_MR_CLIENT=true DEV_MODE=true STANDALONE_MODE=true
 
+.PHONY: dev-bff-debug
+dev-bff-debug:
+	cd bff && make run PORT=4000 MOCK_K8S_CLIENT=false MOCK_MR_CLIENT=false DEV_MODE=true STANDALONE_MODE=true
+
 .PHONY: dev-frontend
 dev-frontend:
 	cd frontend && npm run start:dev

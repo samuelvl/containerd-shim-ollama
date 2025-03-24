@@ -14,11 +14,11 @@ kubectl apply -n kubeflow -k .
 
 # Step 2: Edit the centraldashboard-config ConfigMap
 echo -e "\033[32mEditing centraldashboard-config ConfigMap...\033[0m"
-kubectl get configmap centraldashboard-config -n kubeflow -o json | jq '.data.links |= (fromjson | .menuLinks += [{"icon": "assignment", "link": "/model-registry/", "text": "Ollama", "type": "item"}] | tojson)' | kubectl apply -f -
+kubectl get configmap centraldashboard-config -n kubeflow -o json | jq '.data.links |= (fromjson | .menuLinks += [{"icon": "assignment", "link": "/ollama/", "text": "Ollama", "type": "item"}] | tojson)' | kubectl apply -f -
 
 # Wait for deployment to be available
 echo -e "\033[32mWaiting Ollama UI to be available...\033[0m"
-kubectl wait --for=condition=available -n kubeflow deployment/model-registry-ui --timeout=1m
+kubectl wait --for=condition=available -n kubeflow deployment/ollama-ui --timeout=1m
 
 # Step 5: Port-forward the service
 echo "\033[32mPort-forwarding Kubeflow Central Dashboard...\033[0m"

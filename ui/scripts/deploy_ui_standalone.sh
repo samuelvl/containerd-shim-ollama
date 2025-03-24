@@ -27,7 +27,7 @@ fi
 
 echo "Editing kustomize image..."
 pushd  ../../manifests/kustomize/ui/overlays/standalone
-kustomize edit set image model-registry-ui=${IMG_UI_STANDALONE}
+kustomize edit set image ollama-ui-standalone=${IMG_UI_STANDALONE}
 
 # Step 4: Deploy model registry UI
 echo "Deploying Ollama UI..."
@@ -36,9 +36,9 @@ kubectl apply -n kubeflow -k .
 
 # Wait for deployment to be available
 echo "Waiting Ollama UI to be available..."
-kubectl wait --for=condition=available -n kubeflow deployment/model-registry-ui --timeout=1m
+kubectl wait --for=condition=available -n kubeflow deployment/ollama-ui --timeout=1m
 
 # Step 5: Port-forward the service
 echo "Port-forwarding Ollama UI..."
 echo -e "\033[32mDashboard available in http://localhost:8080\033[0m"
-kubectl port-forward svc/model-registry-ui-service -n kubeflow 8080:8080
+kubectl port-forward svc/ollama-ui-service -n kubeflow 8080:8080

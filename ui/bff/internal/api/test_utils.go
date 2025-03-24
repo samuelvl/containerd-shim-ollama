@@ -56,10 +56,10 @@ func setupApiTest[T any](method string, url string, body interface{}, k8sClient 
 	ctx = context.WithValue(ctx, constants.OllamaHttpClientKey, mockClient)
 	ctx = context.WithValue(ctx, constants.KubeflowUserIdKey, kubeflowUserIDHeaderValue)
 	ctx = context.WithValue(ctx, constants.NamespaceHeaderParameterKey, namespace)
-	mrHttpClient := k8s.HTTPClient{
-		ModelRegistryID: "model-registry",
+	ollamaHttpClient := k8s.HTTPClient{
+		OllamaID: "ollama",
 	}
-	ctx = context.WithValue(ctx, constants.OllamaHttpClientKey, mrHttpClient)
+	ctx = context.WithValue(ctx, constants.OllamaHttpClientKey, ollamaHttpClient)
 	req = req.WithContext(ctx)
 
 	rr := httptest.NewRecorder()

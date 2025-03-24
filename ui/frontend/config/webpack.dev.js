@@ -23,7 +23,7 @@ const PROXY_PROTOCOL = process.env._PROXY_PROTOCOL;
 const PROXY_HOST = process.env._PROXY_HOST;
 const PROXY_PORT = process.env._PROXY_PORT;
 const DEPLOYMENT_MODE = process.env._DEPLOYMENT_MODE;
-const BASE_PATH = DEPLOYMENT_MODE === 'integrated' ? '/model-registry/' : PUBLIC_PATH;
+const BASE_PATH = DEPLOYMENT_MODE === 'integrated' ? '/ollama/' : PUBLIC_PATH;
 
 module.exports = smp.wrap(
   merge(
@@ -53,7 +53,7 @@ module.exports = smp.wrap(
         open: false,
         proxy: [
           {
-            context: ['/api', '/model-registry/api'],
+            context: ['/api', '/ollama/api'],
             target: {
               host: PROXY_HOST,
               protocol: PROXY_PROTOCOL,

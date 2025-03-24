@@ -20,10 +20,10 @@ type HTTPClientInterface interface {
 }
 
 type HTTPClient struct {
-	client          *http.Client
-	baseURL         string
-	ModelRegistryID string
-	logger          *slog.Logger
+	client   *http.Client
+	baseURL  string
+	OllamaID string
+	logger   *slog.Logger
 }
 
 type ErrorResponse struct {
@@ -46,14 +46,14 @@ func NewHTTPClient(logger *slog.Logger, ollamaID string, baseURL string) (HTTPCl
 		client: &http.Client{Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}},
-		baseURL:         baseURL,
-		ModelRegistryID: ollamaID,
-		logger:          logger,
+		baseURL:  baseURL,
+		OllamaID: ollamaID,
+		logger:   logger,
 	}, nil
 }
 
-func (c *HTTPClient) GetModelRegistryID() string {
-	return c.ModelRegistryID
+func (c *HTTPClient) GetOllamaID() string {
+	return c.OllamaID
 }
 
 func (c *HTTPClient) GET(url string) ([]byte, error) {

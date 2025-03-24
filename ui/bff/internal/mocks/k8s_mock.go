@@ -137,23 +137,23 @@ func setupMock(mockK8sClient client.Client, ctx context.Context) error {
 		return err
 	}
 
-	err = createService(mockK8sClient, ctx, "model-registry", "kubeflow", "Ollama", "Ollama Description", "10.0.0.10", "model-registry")
+	err = createService(mockK8sClient, ctx, "ollama", "kubeflow", "Ollama", "Ollama Description", "10.0.0.10", "ollama")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "model-registry-one", "kubeflow", "Ollama One", "Ollama One description", "10.0.0.11", "model-registry")
+	err = createService(mockK8sClient, ctx, "ollama-one", "kubeflow", "Ollama One", "Ollama One description", "10.0.0.11", "ollama")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "model-registry-dora", "dora-namespace", "Ollama Dora", "Ollama Dora description", "10.0.0.12", "model-registry")
+	err = createService(mockK8sClient, ctx, "ollama-dora", "dora-namespace", "Ollama Dora", "Ollama Dora description", "10.0.0.12", "ollama")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "model-registry-bella", "bella-namespace", "Ollama Bella", "Ollama Bella description", "10.0.0.13", "model-registry")
+	err = createService(mockK8sClient, ctx, "ollama-bella", "bella-namespace", "Ollama Bella", "Ollama Bella description", "10.0.0.13", "ollama")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "non-model-registry", "kubeflow", "Not a Ollama", "Not a Ollama Bella description", "10.0.0.14", "")
+	err = createService(mockK8sClient, ctx, "non-ollama", "kubeflow", "Not a Ollama", "Not a Ollama Bella description", "10.0.0.14", "")
 	if err != nil {
 		return err
 	}
@@ -173,7 +173,7 @@ func setupMock(mockK8sClient client.Client, ctx context.Context) error {
 		return fmt.Errorf("failed to create namespace-restricted RBAC: %w", err)
 	}
 
-	err = createGroupAccessRBAC(mockK8sClient, ctx, DoraServiceGroup, "dora-namespace", "model-registry-dora")
+	err = createGroupAccessRBAC(mockK8sClient, ctx, DoraServiceGroup, "dora-namespace", "ollama-dora")
 	if err != nil {
 		return fmt.Errorf("failed to create group-based RBAC: %w", err)
 	}
@@ -371,7 +371,7 @@ func createNamespaceRestrictedRBAC(k8sClient client.Client, ctx context.Context,
 func createGroupAccessRBAC(k8sClient client.Client, ctx context.Context, groupName, namespace, serviceName string) error {
 	role := &rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "group-model-registry-access",
+			Name:      "group-ollama-access",
 			Namespace: namespace,
 		},
 		Rules: []rbacv1.PolicyRule{
@@ -403,7 +403,7 @@ func createGroupAccessRBAC(k8sClient client.Client, ctx context.Context, groupNa
 		},
 		RoleRef: rbacv1.RoleRef{
 			Kind:     "Role",
-			Name:     "group-model-registry-access",
+			Name:     "group-ollama-access",
 			APIGroup: "rbac.authorization.k8s.io",
 		},
 	}

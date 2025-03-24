@@ -1,16 +1,17 @@
 package mocks
 
 import (
-	"github.com/stretchr/testify/mock"
 	"io"
+
+	"github.com/stretchr/testify/mock"
 )
 
 type MockHTTPClient struct {
 	mock.Mock
 }
 
-func (c *MockHTTPClient) GetModelRegistryID() string {
-	return "model-registry"
+func (c *MockHTTPClient) GetOllamaID() string {
+	return "ollama"
 }
 
 func (m *MockHTTPClient) GET(url string) ([]byte, error) {
