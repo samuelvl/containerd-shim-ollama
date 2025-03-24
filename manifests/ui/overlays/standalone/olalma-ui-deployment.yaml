@@ -1,0 +1,8 @@
+- op: add
+  path: /spec/template/spec/containers/0/args
+  value: 
+    - "--standalone-mode=true"
+    - "--port=8080"
+- op: replace
+  path: /spec/template/spec/containers/0/image
+  value: ollama-ui-standalone

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+- kubeflow-dashboard-rbac.yaml
+
+images:
+- name: ollama-ui-standalone
+  newName: ghcr.io/samuelvl/containerd-shim-ollama/ui
+  newTag: latest
+
+patches:
+- path: ollama-ui-deployment.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: ollama-ui
+    version: v1

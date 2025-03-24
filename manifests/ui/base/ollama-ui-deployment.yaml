@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-ui
+  labels:
+    app: ollama-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama-ui
+  template:
+    metadata:
+      labels:
+        app: ollama-ui
+    spec: 
+      serviceAccountName: ollama-ui
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+      containers:
+      - name: ollama-ui
+        image: ollama-ui
+        imagePullPolicy: Always
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/healthcheck
+            port: 8080
+            scheme: HTTP
+            httpHeaders:
+            - name: kubeflow-userid
+              value: user@example.com
+          initialDelaySeconds: 15
+          timeoutSeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2Gi
+          requests:
+            cpu: 500m
+            memory: 2Gi
+        ports:
+          - containerPort: 8080
+        args:
+          - "--port=8080"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL

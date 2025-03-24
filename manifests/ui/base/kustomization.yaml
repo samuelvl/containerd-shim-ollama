@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ollama-ui-role.yaml
+- ollama-ui-service.yaml
+- ollama-ui-deployment.yaml
+- ollama-ui-service-account.yaml
+
+images:
+- name: ollama-ui
+  newName: ghcr.io/samuelvl/containerd-shim-ollama/ui
+  newTag: latest
