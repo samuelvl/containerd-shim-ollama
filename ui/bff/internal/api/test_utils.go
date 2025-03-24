@@ -11,14 +11,14 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
-	k8s "github.com/kubeflow/model-registry/ui/bff/internal/integrations"
-	"github.com/kubeflow/model-registry/ui/bff/internal/mocks"
-	"github.com/kubeflow/model-registry/ui/bff/internal/repositories"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
+	k8s "github.com/kubeflow/ollama/ui/bff/internal/integrations"
+	"github.com/kubeflow/ollama/ui/bff/internal/mocks"
+	"github.com/kubeflow/ollama/ui/bff/internal/repositories"
 )
 
 func setupApiTest[T any](method string, url string, body interface{}, k8sClient k8s.KubernetesClientInterface, kubeflowUserIDHeaderValue string, namespace string) (T, *http.Response, error) {
-	mockMRClient, err := mocks.NewModelRegistryClient(nil)
+	mockOllamaClient, err := mocks.NewOllamaClient(nil)
 	if err != nil {
 		return *new(T), nil, err
 	}
@@ -26,7 +26,7 @@ func setupApiTest[T any](method string, url string, body interface{}, k8sClient 
 	mockClient := new(mocks.MockHTTPClient)
 
 	testApp := App{
-		repositories:     repositories.NewRepositories(mockMRClient),
+		repositories:     repositories.NewRepositories(mockOllamaClient),
 		kubernetesClient: k8sClient,
 		logger:           slog.Default(),
 	}
@@ -53,13 +53,13 @@ func setupApiTest[T any](method string, url string, body interface{}, k8sClient 
 	req.Header.Set(constants.KubeflowUserIDHeader, kubeflowUserIDHeaderValue)
 
 	ctx := mocks.NewMockSessionContext(req.Context())
-	ctx = context.WithValue(ctx, constants.ModelRegistryHttpClientKey, mockClient)
+	ctx = context.WithValue(ctx, constants.OllamaHttpClientKey, mockClient)
 	ctx = context.WithValue(ctx, constants.KubeflowUserIdKey, kubeflowUserIDHeaderValue)
 	ctx = context.WithValue(ctx, constants.NamespaceHeaderParameterKey, namespace)
 	mrHttpClient := k8s.HTTPClient{
 		ModelRegistryID: "model-registry",
 	}
-	ctx = context.WithValue(ctx, constants.ModelRegistryHttpClientKey, mrHttpClient)
+	ctx = context.WithValue(ctx, constants.OllamaHttpClientKey, mrHttpClient)
 	req = req.WithContext(ctx)
 
 	rr := httptest.NewRecorder()

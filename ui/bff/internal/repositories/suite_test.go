@@ -2,17 +2,17 @@ package repositories
 
 import (
 	"context"
-	k8s "github.com/kubeflow/model-registry/ui/bff/internal/integrations"
-	"github.com/kubeflow/model-registry/ui/bff/internal/mocks"
 	"log/slog"
 	"os"
+	"testing"
+
+	k8s "github.com/kubeflow/ollama/ui/bff/internal/integrations"
+	"github.com/kubeflow/ollama/ui/bff/internal/mocks"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
-	"testing"
-)
 
-import (
 	. "github.com/onsi/ginkgo/v2"
+
 	. "github.com/onsi/gomega"
 )
 
@@ -20,12 +20,12 @@ import (
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
 
 var (
-	k8sClient    k8s.KubernetesClientInterface
-	mockMRClient *mocks.ModelRegistryClientMock
-	ctx          context.Context
-	cancel       context.CancelFunc
-	logger       *slog.Logger
-	err          error
+	k8sClient        k8s.KubernetesClientInterface
+	mockOllamaClient *mocks.OllamaClientMock
+	ctx              context.Context
+	cancel           context.CancelFunc
+	logger           *slog.Logger
+	err              error
 )
 
 func TestAPI(t *testing.T) {
@@ -47,7 +47,7 @@ var _ = BeforeSuite(func() {
 	k8sClient, err = mocks.NewKubernetesClient(logger, ctx, cancel)
 	Expect(err).NotTo(HaveOccurred())
 
-	mockMRClient, err = mocks.NewModelRegistryClient(nil)
+	mockOllamaClient, err = mocks.NewOllamaClient(nil)
 	Expect(err).NotTo(HaveOccurred())
 })
 

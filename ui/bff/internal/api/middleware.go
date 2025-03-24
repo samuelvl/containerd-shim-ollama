@@ -11,9 +11,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
-	helper "github.com/kubeflow/model-registry/ui/bff/internal/helpers"
-	"github.com/kubeflow/model-registry/ui/bff/internal/integrations"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
+	helper "github.com/kubeflow/ollama/ui/bff/internal/helpers"
+	"github.com/kubeflow/ollama/ui/bff/internal/integrations"
 	"github.com/rs/cors"
 )
 
@@ -48,7 +48,7 @@ func (app *App) InjectUserHeaders(next http.Handler) http.Handler {
 		}
 
 		// Note: The functionality for `kubeflow-groups` is not fully operational at Kubeflow platform at this time
-		// but it's supported on Model Registry BFF
+		// but it's supported on Ollama BFF
 		//`kubeflow-groups`: Holds a comma-separated list of user groups.
 		var userGroups []string
 		if userGroupsHeader != "" {
@@ -105,24 +105,24 @@ func (app *App) EnableTelemetry(next http.Handler) http.Handler {
 func (app *App) AttachRESTClient(next func(http.ResponseWriter, *http.Request, httprouter.Params)) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-		modelRegistryID := ps.ByName(ModelRegistryId)
+		ollamaID := ps.ByName(OllamaId)
 
 		namespace, ok := r.Context().Value(constants.NamespaceHeaderParameterKey).(string)
 		if !ok || namespace == "" {
 			app.badRequestResponse(w, r, fmt.Errorf("missing namespace in the context"))
 		}
 
-		modelRegistry, err := app.repositories.ModelRegistry.GetModelRegistry(r.Context(), app.kubernetesClient, namespace, modelRegistryID)
-		if err != nil {
-			app.notFoundResponse(w, r)
-			return
-		}
-		modelRegistryBaseURL := modelRegistry.ServerAddress
+		// model, err := app.repositories.Model.GetModel(r.Context(), app.kubernetesClient, namespace, ollamaID)
+		// if err != nil {
+		// 	app.notFoundResponse(w, r)
+		// 	return
+		// }
+		modelBaseURL := "http://localhost:8080"
 
 		// If we are in dev mode, we need to resolve the server address to the local host
-		// to allow the client to connect to the model registry via port forwarded from the cluster to the local machine.
+		// to allow the client to connect to the model via port forwarded from the cluster to the local machine.
 		if app.config.DevMode {
-			modelRegistryBaseURL = app.repositories.ModelRegistry.ResolveServerAddress("localhost", int32(app.config.DevModePort))
+			modelBaseURL = app.repositories.Model.ResolveServerAddress("localhost", int32(app.config.DevModePort))
 		}
 
 		// Set up a child logger for the rest client that automatically adds the request id to all statements for
@@ -137,12 +137,12 @@ func (app *App) AttachRESTClient(next func(http.ResponseWriter, *http.Request, h
 			}
 		}
 
-		client, err := integrations.NewHTTPClient(restClientLogger, modelRegistryID, modelRegistryBaseURL)
+		client, err := integrations.NewHTTPClient(restClientLogger, ollamaID, modelBaseURL)
 		if err != nil {
 			app.serverErrorResponse(w, r, fmt.Errorf("failed to create Kubernetes client: %v", err))
 			return
 		}
-		ctx := context.WithValue(r.Context(), constants.ModelRegistryHttpClientKey, client)
+		ctx := context.WithValue(r.Context(), constants.OllamaHttpClientKey, client)
 		next(w, r.WithContext(ctx), ps)
 	}
 }
@@ -211,8 +211,8 @@ func (app *App) PerformSARonSpecificService(next func(http.ResponseWriter, *http
 			return
 		}
 
-		modelRegistryID := ps.ByName(ModelRegistryId)
-		if !ok || modelRegistryID == "" {
+		ollamaID := ps.ByName(OllamaId)
+		if !ok || ollamaID == "" {
 			app.badRequestResponse(w, r, fmt.Errorf("missing namespace in context"))
 			return
 		}
@@ -224,7 +224,7 @@ func (app *App) PerformSARonSpecificService(next func(http.ResponseWriter, *http
 			userGroups = []string{}
 		}
 
-		allowed, err := app.kubernetesClient.PerformSARonSpecificService(user, userGroups, namespace, modelRegistryID)
+		allowed, err := app.kubernetesClient.PerformSARonSpecificService(user, userGroups, namespace, ollamaID)
 		if err != nil {
 			app.forbiddenResponse(w, r, "failed to perform SAR: %v")
 			return

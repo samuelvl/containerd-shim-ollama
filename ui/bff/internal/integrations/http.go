@@ -4,12 +4,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
-	helper "github.com/kubeflow/model-registry/ui/bff/internal/helpers"
 	"io"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/google/uuid"
+	helper "github.com/kubeflow/ollama/ui/bff/internal/helpers"
 )
 
 type HTTPClientInterface interface {
@@ -39,14 +40,14 @@ func (e *HTTPError) Error() string {
 	return fmt.Sprintf("HTTP %d: %s - %s", e.StatusCode, e.Code, e.Message)
 }
 
-func NewHTTPClient(logger *slog.Logger, modelRegistryID string, baseURL string) (HTTPClientInterface, error) {
+func NewHTTPClient(logger *slog.Logger, ollamaID string, baseURL string) (HTTPClientInterface, error) {
 
 	return &HTTPClient{
 		client: &http.Client{Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}},
 		baseURL:         baseURL,
-		ModelRegistryID: modelRegistryID,
+		ModelRegistryID: ollamaID,
 		logger:          logger,
 	}, nil
 }
@@ -89,7 +90,7 @@ func (c *HTTPClient) GET(url string) ([]byte, error) {
 		}
 		//Sometimes the code comes empty from model registry API
 		//also not all error codes are correctly implemented
-		//see https://github.com/kubeflow/model-registry/issues/95
+		//see https://github.com/kubeflow/ollama/issues/95
 		if httpError.ErrorResponse.Code == "" {
 			httpError.ErrorResponse.Code = strconv.Itoa(response.StatusCode)
 		}
@@ -135,7 +136,7 @@ func (c *HTTPClient) POST(url string, body io.Reader) ([]byte, error) {
 		}
 		//Sometimes the code comes empty from model registry API
 		//also not all error codes are correctly implemented
-		//see https://github.com/kubeflow/model-registry/issues/95
+		//see https://github.com/kubeflow/ollama/issues/95
 		if httpError.ErrorResponse.Code == "" {
 			httpError.ErrorResponse.Code = strconv.Itoa(response.StatusCode)
 		}
@@ -181,7 +182,7 @@ func (c *HTTPClient) PATCH(url string, body io.Reader) ([]byte, error) {
 		}
 		//Sometimes the code comes empty from model registry API
 		//also not all error codes are correctly implemented
-		//see https://github.com/kubeflow/model-registry/issues/95
+		//see https://github.com/kubeflow/ollama/issues/95
 		if httpError.ErrorResponse.Code == "" {
 			httpError.ErrorResponse.Code = strconv.Itoa(response.StatusCode)
 		}

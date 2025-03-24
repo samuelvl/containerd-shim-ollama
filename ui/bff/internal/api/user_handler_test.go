@@ -3,13 +3,14 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
-	"github.com/kubeflow/model-registry/ui/bff/internal/mocks"
 	"io"
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/kubeflow/model-registry/ui/bff/internal/repositories"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
+	"github.com/kubeflow/ollama/ui/bff/internal/mocks"
+
+	"github.com/kubeflow/ollama/ui/bff/internal/repositories"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -27,7 +28,7 @@ var _ = Describe("TestUserHandler", func() {
 			By("creating the test app")
 			testApp = App{
 				kubernetesClient: k8sClient,
-				repositories:     repositories.NewRepositories(mockMRClient),
+				repositories:     repositories.NewRepositories(mockOllamaClient),
 				logger:           logger,
 			}
 		})

@@ -2,8 +2,8 @@
   "name": "ollama-ui",
   "version": "0.0.1",
   "description": "An user interface for Kubeflow Ollama project",
-  "repository": "https://github.com/kubeflow/model-registry.git",
-  "homepage": "https://github.com/kubeflow/model-registry",
+  "repository": "https://github.com/kubeflow/ollama.git",
+  "homepage": "https://github.com/kubeflow/ollama",
   "license": "Apache-2.0",
   "private": true,
   "engines": {

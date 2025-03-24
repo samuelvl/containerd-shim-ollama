@@ -1,7 +1,7 @@
 [contributing guidelines]: CONTRIBUTING.md
 [Dev setup & Requirements]: docs/dev-setup.md
 [Ollama UI documentation]: docs/README.md
-[issue]: https://github.com/kubeflow/model-registry/issues/new/choose
+[issue]: https://github.com/kubeflow/ollama/issues/new/choose
 
 # Kubeflow Ollama UI
 

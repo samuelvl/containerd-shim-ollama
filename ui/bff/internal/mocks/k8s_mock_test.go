@@ -26,8 +26,8 @@ var _ = Describe("Kubernetes ControllerRuntimeClient Test", func() {
 			for _, service := range services {
 				if service.Name == "model-registry" {
 					foundService = true
-					Expect(service.DisplayName).To(Equal("Model Registry"))
-					Expect(service.Description).To(Equal("Model Registry Description"))
+					Expect(service.DisplayName).To(Equal("Ollama"))
+					Expect(service.Description).To(Equal("Ollama Description"))
 					break
 				}
 			}
@@ -42,8 +42,8 @@ var _ = Describe("Kubernetes ControllerRuntimeClient Test", func() {
 
 			By("checking that service details are correct")
 			Expect(service.Name).To(Equal("model-registry-dora"))
-			Expect(service.Description).To(Equal("Model Registry Dora description"))
-			Expect(service.DisplayName).To(Equal("Model Registry Dora"))
+			Expect(service.Description).To(Equal("Ollama Dora description"))
+			Expect(service.DisplayName).To(Equal("Ollama Dora"))
 		})
 
 		It("should retrieve the services names", func() {

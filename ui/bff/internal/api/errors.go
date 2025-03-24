@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/kubeflow/model-registry/ui/bff/internal/integrations"
+	"github.com/kubeflow/ollama/ui/bff/internal/integrations"
 )
 
 type HTTPError struct {

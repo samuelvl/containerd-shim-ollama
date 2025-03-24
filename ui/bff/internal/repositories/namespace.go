@@ -2,8 +2,9 @@ package repositories
 
 import (
 	"fmt"
-	k8s "github.com/kubeflow/model-registry/ui/bff/internal/integrations"
-	"github.com/kubeflow/model-registry/ui/bff/internal/models"
+
+	k8s "github.com/kubeflow/ollama/ui/bff/internal/integrations"
+	"github.com/kubeflow/ollama/ui/bff/internal/models"
 )
 
 type NamespaceRepository struct{}

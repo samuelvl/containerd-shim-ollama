@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	k8s "github.com/kubeflow/model-registry/ui/bff/internal/integrations"
+	k8s "github.com/kubeflow/ollama/ui/bff/internal/integrations"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -137,23 +137,23 @@ func setupMock(mockK8sClient client.Client, ctx context.Context) error {
 		return err
 	}
 
-	err = createService(mockK8sClient, ctx, "model-registry", "kubeflow", "Model Registry", "Model Registry Description", "10.0.0.10", "model-registry")
+	err = createService(mockK8sClient, ctx, "model-registry", "kubeflow", "Ollama", "Ollama Description", "10.0.0.10", "model-registry")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "model-registry-one", "kubeflow", "Model Registry One", "Model Registry One description", "10.0.0.11", "model-registry")
+	err = createService(mockK8sClient, ctx, "model-registry-one", "kubeflow", "Ollama One", "Ollama One description", "10.0.0.11", "model-registry")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "model-registry-dora", "dora-namespace", "Model Registry Dora", "Model Registry Dora description", "10.0.0.12", "model-registry")
+	err = createService(mockK8sClient, ctx, "model-registry-dora", "dora-namespace", "Ollama Dora", "Ollama Dora description", "10.0.0.12", "model-registry")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "model-registry-bella", "bella-namespace", "Model Registry Bella", "Model Registry Bella description", "10.0.0.13", "model-registry")
+	err = createService(mockK8sClient, ctx, "model-registry-bella", "bella-namespace", "Ollama Bella", "Ollama Bella description", "10.0.0.13", "model-registry")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "non-model-registry", "kubeflow", "Not a Model Registry", "Not a Model Registry Bella description", "10.0.0.14", "")
+	err = createService(mockK8sClient, ctx, "non-model-registry", "kubeflow", "Not a Ollama", "Not a Ollama Bella description", "10.0.0.14", "")
 	if err != nil {
 		return err
 	}

@@ -2,9 +2,10 @@ package api
 
 import (
 	"errors"
-	"github.com/julienschmidt/httprouter"
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
 )
 
 func (app *App) HealthcheckHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

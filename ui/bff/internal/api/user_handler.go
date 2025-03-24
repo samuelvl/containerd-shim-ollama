@@ -2,10 +2,11 @@ package api
 
 import (
 	"errors"
-	"github.com/julienschmidt/httprouter"
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
-	"github.com/kubeflow/model-registry/ui/bff/internal/models"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
+	"github.com/kubeflow/ollama/ui/bff/internal/models"
 )
 
 type UserEnvelope Envelope[*models.User, None]

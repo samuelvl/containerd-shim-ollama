@@ -62,14 +62,14 @@ The following environment variables are used to configure the deployment and dev
 ### `IMG_UI`
 
 * **Description**: Specifies the image name and tag for the UI (with BFF).
-* **Default Value**: `model-registry-ui:latest`
-* **Example**: `IMG_UI=model-registry-bff:latest`
+* **Default Value**: `ollama-ui:latest`
+* **Example**: `IMG_UI=ollama-bff:latest`
 
 ### `IMG_UI_STANDALONE`
 
 * **Description**: Specifies the image name and tag for the UI (with BFF) in **standalone mode**, used for local kind deployment.
-* **Default Value**: `model-registry-ui-standalone:latest`
-* **Example**: `IMG_UI_STANDALONE=model-registry-bff:latest`
+* **Default Value**: `ollama-ui-standalone:latest`
+* **Example**: `IMG_UI_STANDALONE=ollama-bff:latest`
 
 ### `PLATFORM`
 
@@ -95,8 +95,8 @@ Here is an example of what your `.env.local` file might look like:
 
 ```shell
 CONTAINER_TOOL=docker
-IMG_UI=quay.io/<personal-registry>/model-registry-ui:latest
-IMG_UI_STANDALONE=quay.io/<personal-registry>/model-registry-ui-standalone:latest
+IMG_UI=quay.io/<personal-registry>/ollama-ui:latest
+IMG_UI_STANDALONE=quay.io/<personal-registry>/ollama-ui-standalone:latest
 PLATFORM=linux/amd64
 ```
 

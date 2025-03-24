@@ -3,26 +3,27 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"github.com/kubeflow/model-registry/ui/bff/internal/config"
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
-	"github.com/kubeflow/model-registry/ui/bff/internal/mocks"
-	"github.com/kubeflow/model-registry/ui/bff/internal/models"
-	"github.com/kubeflow/model-registry/ui/bff/internal/repositories"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/kubeflow/ollama/ui/bff/internal/config"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
+	"github.com/kubeflow/ollama/ui/bff/internal/mocks"
+	"github.com/kubeflow/ollama/ui/bff/internal/models"
+	"github.com/kubeflow/ollama/ui/bff/internal/repositories"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHealthCheckHandler(t *testing.T) {
 
-	mockMRClient, _ := mocks.NewModelRegistryClient(nil)
+	mockOllamaClient, _ := mocks.NewOllamaClient(nil)
 
 	app := App{config: config.EnvConfig{
 		Port: 4000,
 	},
-		repositories: repositories.NewRepositories(mockMRClient),
+		repositories: repositories.NewRepositories(mockOllamaClient),
 	}
 
 	rr := httptest.NewRecorder()

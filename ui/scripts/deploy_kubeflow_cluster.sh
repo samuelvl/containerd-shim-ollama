@@ -9,15 +9,15 @@ echo -e "\033[33mWARNING: You must have access to a cluster with kubeflow instal
 
 # Step 1: Deploy Ollama UI to cluster
 pushd  ../../manifests/kustomize/options/ui/overlays/istio
-echo -e "\033[32mDeploying Model Registry UI...\033[0m"
+echo -e "\033[32mDeploying Ollama UI...\033[0m"
 kubectl apply -n kubeflow -k .
 
 # Step 2: Edit the centraldashboard-config ConfigMap
 echo -e "\033[32mEditing centraldashboard-config ConfigMap...\033[0m"
-kubectl get configmap centraldashboard-config -n kubeflow -o json | jq '.data.links |= (fromjson | .menuLinks += [{"icon": "assignment", "link": "/model-registry/", "text": "Model Registry", "type": "item"}] | tojson)' | kubectl apply -f -
+kubectl get configmap centraldashboard-config -n kubeflow -o json | jq '.data.links |= (fromjson | .menuLinks += [{"icon": "assignment", "link": "/model-registry/", "text": "Ollama", "type": "item"}] | tojson)' | kubectl apply -f -
 
 # Wait for deployment to be available
-echo -e "\033[32mWaiting Model Registry UI to be available...\033[0m"
+echo -e "\033[32mWaiting Ollama UI to be available...\033[0m"
 kubectl wait --for=condition=available -n kubeflow deployment/model-registry-ui --timeout=1m
 
 # Step 5: Port-forward the service

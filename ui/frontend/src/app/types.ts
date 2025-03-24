@@ -19,8 +19,7 @@ export type ModularArchParams = {
   nextPageToken: string;
 };
 
-export type ModelRegistryCustomProperties = Record<string, unknown>;
-export type ModelRegistryStringCustomProperties = Record<string, unknown>;
+export type ModelCustomProperties = Record<string, unknown>;
 
 export type ModelBase = {
   id: string;
@@ -29,7 +28,7 @@ export type ModelBase = {
   description?: string;
   createTimeSinceEpoch: string;
   lastUpdateTimeSinceEpoch: string;
-  customProperties: ModelRegistryCustomProperties;
+  customProperties: ModelCustomProperties;
   image?: string;
   tags?: string[];
 };
@@ -37,6 +36,7 @@ export type ModelBase = {
 export type OllamaModel = ModelBase & {
   author?: string;
   owner?: string;
+  deployed: boolean;
   status: StatusModel;
 };
 

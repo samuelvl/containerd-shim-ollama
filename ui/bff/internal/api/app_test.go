@@ -5,8 +5,8 @@ import (
 	"net/http"
 	httptest "net/http/httptest"
 
-	"github.com/kubeflow/model-registry/ui/bff/internal/config"
-	"github.com/kubeflow/model-registry/ui/bff/internal/repositories"
+	"github.com/kubeflow/ollama/ui/bff/internal/config"
+	"github.com/kubeflow/ollama/ui/bff/internal/repositories"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -25,7 +25,7 @@ var _ = Describe("Static File serving Test", func() {
 			}
 			app := &App{
 				kubernetesClient: k8sClient,
-				repositories:     repositories.NewRepositories(mockMRClient),
+				repositories:     repositories.NewRepositories(mockOllamaClient),
 				logger:           logger,
 				config:           envConfig,
 			}

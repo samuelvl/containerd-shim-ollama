@@ -137,7 +137,7 @@ paths:
       operationId: patchModel
       summary: Update a specific model
       description: Updates an existing Ollama model with partial data.
-  /api/v1/generate:
+  /api/v1/ollama/generate:
     summary: Path used to generate model completions.
     description: >-
       The REST endpoint/path used to generate a response for a given prompt with a provided model.
@@ -415,8 +415,6 @@ components:
         lastUpdateTimeSinceEpoch:
           type: string
           description: Time when the model was last updated (milliseconds since epoch)
-        customProperties:
-          $ref: "#/components/schemas/ModelRegistryCustomProperties"
         image:
           type: string
           description: Image URL or identifier for the model
@@ -432,6 +430,9 @@ components:
           required:
             - status
           properties:
+          deployed:
+            type: boolean
+            description: Deployment status
             author:
               type: string
               description: Author of the model
@@ -449,8 +450,9 @@ components:
         description:
           type: string
           description: Description of the model
-        customProperties:
-          $ref: "#/components/schemas/ModelRegistryCustomProperties"
+        deployed:
+          type: boolean
+          description: Deployment status
         image:
           type: string
           description: Image URL or identifier for the model

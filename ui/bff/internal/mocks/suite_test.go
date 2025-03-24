@@ -2,16 +2,16 @@ package mocks
 
 import (
 	"context"
-	k8s "github.com/kubeflow/model-registry/ui/bff/internal/integrations"
 	"log/slog"
 	"os"
+	"testing"
+
+	k8s "github.com/kubeflow/ollama/ui/bff/internal/integrations"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
-	"testing"
-)
 
-import (
 	. "github.com/onsi/ginkgo/v2"
+
 	. "github.com/onsi/gomega"
 )
 

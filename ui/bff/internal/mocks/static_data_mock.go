@@ -7,8 +7,8 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/google/uuid"
-	"github.com/kubeflow/model-registry/pkg/openapi"
-	"github.com/kubeflow/model-registry/ui/bff/internal/constants"
+	"github.com/kubeflow/ollama/pkg/openapi"
+	"github.com/kubeflow/ollama/ui/bff/internal/constants"
 )
 
 func GetRegisteredModelMocks() []openapi.RegisteredModel {
