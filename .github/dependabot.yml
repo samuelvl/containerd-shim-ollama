@@ -11,15 +11,31 @@ updates:
       - "/ui/bff/"
     schedule:
       interval: "weekly"
+    groups: 
+      gomod-dependencies:
+        patterns: 
+         - "*"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups: 
+      docker-dependencies:
+        patterns: 
+         - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups: 
+      gh-actions-dependencies:
+        patterns: 
+         - "*"
   - package-ecosystem: "npm"
     directory: "/ui/frontend/"
     schedule:
       interval: "weekly"
+    groups: 
+      npm-dependencies:
+        patterns: 
+         - "*"
