@@ -85,13 +85,13 @@ docker-push-standalone:
 
 ############ Deployment ############
 
-.PHONY: kind-deployment
-kind-deployment:
-	./scripts/deploy_kind_cluster.sh
+.PHONY: ui-deployment-standalone
+ui-deployment-standalone:
+	./scripts/deploy_ui_standalone.sh
 
-.PHONY: kubeflow-deployment
-kubeflow-deployment:
-	./scripts/deploy_kubeflow_cluster.sh
+.PHONY: ui-deployment-kubeflow
+ui-deployment-kubeflow:
+	./scripts/deploy_ui_kubeflow.sh
 
 ############ Build ############	
 .PHONY: frontend-build

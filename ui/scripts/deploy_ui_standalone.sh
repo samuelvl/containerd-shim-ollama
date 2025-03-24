@@ -14,7 +14,7 @@ if kubectl config use-context kind-kind  >/dev/null 2>&1; then
 else
     # Step 1: Create a kind cluster
     echo "Creating kind cluster..."
-    kind create cluster
+    make kind
 
     # Verify cluster creation
     echo "Verifying cluster..."
@@ -22,31 +22,13 @@ else
 
     # Step 2: Create kubeflow namespace
     echo "Creating kubeflow namespace..."
-    kubectl create namespace kubeflow
-
-    # Step 3: Deploy Ollama to cluster
-    echo "Deploying Ollama to cluster..."
-    kubectl apply -k "https://github.com/alexcreasy/model-registry/manifests/kustomize/overlays/db?ref=kind"
-
-    # Wait for deployment to be available
-    echo "Waiting for Ollama deployment to be available..."
-    kubectl wait --for=condition=available -n kubeflow deployment/model-registry-deployment --timeout=1m
-
-    # Verify deployment
-    echo "Verifying deployment..."
-    kubectl get pods -n kubeflow
+    kubectl create namespace ai-models
 fi
 
-# Step 4: Build Ollama and push in standalone mode
-echo "Building Ollama UI..."
-make docker-build-standalone
-make docker-push-standalone
-
 echo "Editing kustomize image..."
-pushd  ../../manifests/kustomize/options/ui/base
+pushd  ../../manifests/kustomize/ui/overlays/standalone
 kustomize edit set image model-registry-ui=${IMG_UI_STANDALONE}
 
-pushd  ../overlays/standalone
 # Step 4: Deploy model registry UI
 echo "Deploying Ollama UI..."
 kustomize edit set namespace kubeflow

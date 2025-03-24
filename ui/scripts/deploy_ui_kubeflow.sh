@@ -8,7 +8,7 @@ command -v kind >/dev/null 2>&1 || { echo >&2 "kind is required but it's not ins
 echo -e "\033[33mWARNING: You must have access to a cluster with kubeflow installed.\033[0m"
 
 # Step 1: Deploy Ollama UI to cluster
-pushd  ../../manifests/kustomize/options/ui/overlays/istio
+pushd  ../../manifests/kustomize/ui/overlays/istio
 echo -e "\033[32mDeploying Ollama UI...\033[0m"
 kubectl apply -n kubeflow -k .
 

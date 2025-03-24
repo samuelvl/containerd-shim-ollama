@@ -24,15 +24,21 @@ To run the a mocked dev environment you can either:
 
 * Or follow the [frontend dev setup] and [BFF dev setup].
 
-### Kubernetes Deployment
-
-[TODO: change this to Ollama UI deployment]
-For a in-depth guide on how to deploy the Ollama UI, please refer to the [local kubernetes deployment](./bff/docs/dev-guide.md) documentation.
+### Kubernetes Standalone Deployment
 
 To quickly enable the Ollama UI in your Kind cluster, you can use the following command:
 
 ```shell
-make kind-deployment
+make ui-deployment-standalone
+```
+
+
+### Kubernetes Kubeflow Deployment
+
+To deploy the Ollama UI in your Kubeflow cluster, you can use the following command:
+
+```shell
+make ui-deployment-kubeflow
 ```
 
 ## OpenAPI Specification
@@ -62,14 +68,14 @@ The following environment variables are used to configure the deployment and dev
 ### `IMG_UI`
 
 * **Description**: Specifies the image name and tag for the UI (with BFF).
-* **Default Value**: `ollama-ui:latest`
-* **Example**: `IMG_UI=ollama-bff:latest`
+* **Default Value**: `ui:latest`
+* **Example**: `IMG_UI=ui:latest`
 
 ### `IMG_UI_STANDALONE`
 
 * **Description**: Specifies the image name and tag for the UI (with BFF) in **standalone mode**, used for local kind deployment.
-* **Default Value**: `ollama-ui-standalone:latest`
-* **Example**: `IMG_UI_STANDALONE=ollama-bff:latest`
+* **Default Value**: `ui-standalone:latest`
+* **Example**: `IMG_UI_STANDALONE=ui-standalone:latest`
 
 ### `PLATFORM`
 
@@ -95,8 +101,8 @@ Here is an example of what your `.env.local` file might look like:
 
 ```shell
 CONTAINER_TOOL=docker
-IMG_UI=quay.io/<personal-registry>/ollama-ui:latest
-IMG_UI_STANDALONE=quay.io/<personal-registry>/ollama-ui-standalone:latest
+IMG_UI=quay.io/<personal-registry>/ui:latest
+IMG_UI_STANDALONE=quay.io/<personal-registry>/ui-standalone:latest
 PLATFORM=linux/amd64
 ```
 

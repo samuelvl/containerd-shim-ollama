@@ -9,5 +9,5 @@ resources:
 
 images:
 - name: ollama-ui
-  newName: ghcr.io/kubeflow/ollama/ui
+  newName: ghcr.io/samuelvl/containerd-shim-ollama/ui
   newTag: latest

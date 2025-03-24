@@ -63,4 +63,12 @@ endif
 kind-delete:
 	$(KIND) delete cluster --name $(KIND_CLUSTER_NAME)
 
+.PHONY: ui-deployment-standalone
+ui-deployment-standalone:
+	./ui/scripts/deploy_ui_standalone.sh
+
+.PHONY: ui-deployment-kubeflow
+ui-deployment-kubeflow:
+	./ui/scripts/deploy_ui_kubeflow.sh
+
 clean: kind-delete clean-build

@@ -1,4 +1,4 @@
-name: Build and Push UI Image
+name: Build and Push UI Standalone Image
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
     paths:
       - '/ui/**'
 env:
-  IMAGE_NAME: ui
+  IMAGE_NAME: ui-standalone
   REGISTRY: ghcr.io
   OWNER: samuelvl
   REPO: containerd-shim-ollama
@@ -52,5 +52,8 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          MOCK_AUTH=true
+          DEPLOYMENT_MODE=standalone
         cache-from: type=gha
         cache-to: type=gha,mode=max
