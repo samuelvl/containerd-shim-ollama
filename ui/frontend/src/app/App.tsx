@@ -1,5 +1,9 @@
 import * as React from 'react';
-import '@patternfly/react-core/dist/styles/base.css';
+import '@patternfly/patternfly/patternfly.min.css';
+import '@patternfly/patternfly/patternfly-addons.css';
+import '@patternfly/patternfly/patternfly-charts.css';
+import '@patternfly/chatbot/dist/css/main.css';
+import '~/shared/style/MUI-theme.scss';
 import './app.css';
 import {
   Alert,

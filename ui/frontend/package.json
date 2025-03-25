@@ -103,6 +103,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.13.5",
+    "@patternfly/chatbot": "^2.1.0",
     "@patternfly/patternfly": "^6.1.0",
     "@patternfly/react-core": "6.1.0",
     "@patternfly/react-icons": "6.1.0",

@@ -1,7 +1,7 @@
-import { GenerateRequest, GenerateResponse } from '~/app/types';
 import { assembleModularArchBody, isModArchResponse, restCREATE } from '~/shared/api/apiUtils';
 import { APIOptions } from '~/shared/api/types';
 import { handleRestFailures } from '~/shared/api/errorUtils';
+import { GenerateRequest, GenerateResponse } from '../concepts/chat/types';
 
 export const generate =
   (hostPath: string, queryParams: Record<string, unknown> = {}) =>
