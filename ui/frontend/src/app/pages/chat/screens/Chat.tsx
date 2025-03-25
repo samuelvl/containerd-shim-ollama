@@ -5,7 +5,7 @@ import { isMUITheme } from '~/shared/utilities/const';
 import TitleWithIcon from '~/shared/components/design/TitleWithIcon';
 import { ProjectObjectType } from '~/shared/components/design/utils';
 
-type ModelsProps = Omit<
+type ChatProps = Omit<
   React.ComponentProps<typeof ApplicationsPage>,
   | 'title'
   | 'description'
@@ -16,19 +16,15 @@ type ModelsProps = Omit<
   | 'headerContent'
 >;
 
-const Models: React.FC<ModelsProps> = ({ ...pageProps }) => (
+const Chat: React.FC<ChatProps> = ({ ...pageProps }) => (
   <ApplicationsPage
     {...pageProps}
     title={
-      !isMUITheme() ? (
-        <TitleWithIcon title="Model Catalog" objectType={ProjectObjectType.registeredModels} />
-      ) : (
-        'Model Catalog'
-      )
+      !isMUITheme() ? <TitleWithIcon title="Chat" objectType={ProjectObjectType.model} /> : 'Chat'
     }
     description={
       !isMUITheme() ? (
-        'Select a model from the list to deploy it in a cluster and start a new prompt session.'
+        'You can start a chat with a model by selecting it from the list. You can also create a new chat session by clicking on the "New Chat" button.'
       ) : (
         <Divider />
       )
@@ -39,4 +35,4 @@ const Models: React.FC<ModelsProps> = ({ ...pageProps }) => (
   />
 );
 
-export default Models;
+export default Chat;

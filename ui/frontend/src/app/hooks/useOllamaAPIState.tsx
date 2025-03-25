@@ -1,6 +1,6 @@
 import React from 'react';
 import { APIState } from '~/shared/api/types';
-import { OllamaModelAPIs } from '~/app/types';
+import { OllamaModelAPIs } from '~/app/concepts/chat/types';
 import { generate } from '~/app/api/service';
 import useAPIState from '~/shared/api/useAPIState';
 

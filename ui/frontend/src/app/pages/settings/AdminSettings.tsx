@@ -17,9 +17,9 @@ const AdminSettings: React.FC = () => (
         'Admin Settings'
       )
     }
+    description={!isMUITheme() ? 'Manage settings about ollama models.' : <Divider />}
     loaded
     empty
-    description={!isMUITheme() ? 'Manage settings about ollama models.' : <Divider />}
     errorMessage="Unable to load settings"
   />
 );
