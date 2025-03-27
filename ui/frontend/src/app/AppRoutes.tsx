@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import NotFound from '~/shared/components/notFound/NotFound';
 import ModelRegistrySettingsRoutes from './pages/settings/AdminSettingRoutes';
-import ModelRegistryRoutes from './pages/models/ModelRoutes';
+
 import useUser from './hooks/useUser';
+import ChatRoutes from './pages/chat/ChatRoutes';
+import ModelCatalogRoutes from './pages/models/ModelCatalogRoutes';
 
 export const isNavDataGroup = (navItem: NavDataItem): navItem is NavDataGroup =>
   'children' in navItem;
@@ -39,9 +41,13 @@ export const useAdminSettings = (): NavDataItem[] => {
 
 export const useNavData = (): NavDataItem[] => [
   {
-    label: 'Ollama',
-    path: '/ollama',
+    label: 'Models',
+    path: '/models',
   },
+  // {
+  //   label: 'Chat',
+  //   path: '/chat',
+  // },
   ...useAdminSettings(),
 ];
 
@@ -50,8 +56,9 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/ollama" replace />} />
-      <Route path="/ollama/*" element={<ModelRegistryRoutes />} />
+      <Route path="/" element={<Navigate to="/models" replace />} />
+      <Route path="/models/*" element={<ModelCatalogRoutes />} />
+      {/* <Route path="/chat/*" element={<ChatRoutes />} /> */}
       <Route path="*" element={<NotFound />} />
       {/* TODO: [Conditional render] Follow up add testing and conditional rendering when in standalone mode*/}
       {clusterAdmin && <Route path="/admin-settings/*" element={<ModelRegistrySettingsRoutes />} />}

@@ -10,6 +10,7 @@ type MarkdownViewProps = {
   /** Strips some padding out so the content can fit as an inline-block effort */
   conciseDisplay?: boolean;
   component?: 'div' | 'span';
+  maxHeading?: number;
 };
 
 const MarkdownView: React.FC<MarkdownViewProps & React.HTMLAttributes<HTMLDivElement>> = ({
@@ -17,16 +18,17 @@ const MarkdownView: React.FC<MarkdownViewProps & React.HTMLAttributes<HTMLDivEle
   markdown = '',
   conciseDisplay,
   component = 'div',
+  maxHeading,
   ...props
 }) => {
   const Component = component;
   return (
     <Component
-      className={classNames('kubeflow-markdown-view', className, {
-        'kubeflow-markdown-view--with-padding': !conciseDisplay,
+      className={classNames('odh-markdown-view', className, {
+        'odh-markdown-view--with-padding': !conciseDisplay,
       })}
       {...props}
-      dangerouslySetInnerHTML={{ __html: markdownConverter.makeHtml(markdown) }}
+      dangerouslySetInnerHTML={{ __html: markdownConverter.makeHtml(markdown, maxHeading) }}
     />
   );
 };
