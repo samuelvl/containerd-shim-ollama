@@ -6,6 +6,8 @@ resources:
 - ollama-ui-service.yaml
 - ollama-ui-deployment.yaml
 - ollama-ui-service-account.yaml
+- model-catalog-configmap.yaml
+- model-catalog-rbac.yaml
 
 images:
 - name: ollama-ui
