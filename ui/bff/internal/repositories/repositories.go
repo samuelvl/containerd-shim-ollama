@@ -17,5 +17,6 @@ func NewRepositories(OllamaClient OllamaClientInterface) *Repositories {
 		OllamaClient: OllamaClient,
 		User:         NewUserRepository(),
 		Namespace:    NewNamespaceRepository(),
+		Chat:         NewChatRepository(OllamaClient),
 	}
 }
