@@ -1,26 +1,24 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 import React from 'react';
-import useFetchState, { FetchState } from '~/shared/utilities/useFetchState';
+import useFetchState, {
+  FetchState,
+  FetchStateCallbackPromise,
+} from '~/shared/utilities/useFetchState';
+import { useDeepCompareMemoize } from '~/shared/utilities/useDeepCompareMemoize';
+import { getListModels } from '~/app/api/k8s';
 import { ModelCatalogSource } from './types';
-import { mockCatalogModel } from './mockCatalogModel';
 
 type State = ModelCatalogSource[];
 
-export const useModelCatalogSources = (): FetchState<State> => {
-  const callback = React.useCallback(async () => {
-    // Simulate a fetch call with a timeout
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, 500);
-    });
-    // Return an empty array of ModelCatalogSource
-    const modelCatalog = {
-      source: 'ollama',
-      models: [mockCatalogModel({})],
-    } as unknown as ModelCatalogSource;
-    return [modelCatalog];
-  }, []);
+export const useModelCatalogSources = (queryParams: Record<string, unknown>): FetchState<State> => {
+  const paramsMemo = useDeepCompareMemoize(queryParams);
 
-  return useFetchState<State>(callback, []);
+  const listModelRegistries = React.useMemo(() => getListModels('', paramsMemo), [paramsMemo]);
+  const callback = React.useCallback<FetchStateCallbackPromise<ModelCatalogSource[]>>(
+    (opts) => listModelRegistries(opts),
+    [listModelRegistries],
+  );
+  return useFetchState(callback, [], { initialPromisePurity: true });
 };
 
 export default useModelCatalogSources;

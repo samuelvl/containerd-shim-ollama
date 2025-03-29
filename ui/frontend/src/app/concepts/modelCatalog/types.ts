@@ -1,3 +1,5 @@
+import { APIOptions } from '~/shared/api/types';
+
 export type BaseModel = {
   catalog?: string;
   repository?: string;
@@ -48,3 +50,11 @@ export type ModelCatalogSource = {
   source: string;
   models: CatalogModel[];
 };
+
+export type PatchModel = (
+  opts: APIOptions,
+  data: Partial<CatalogModel>,
+  registeredModelId: string,
+) => Promise<CatalogModel>;
+
+export type GetModel = (opts: APIOptions, registeredModelId: string) => Promise<ModelCatalogSource>;
