@@ -22,7 +22,7 @@ And one for the "backend":
 
 ```bash
 cd ../bff
-go run ./cmd/main.go  --port=4000 --static-assets-dir=./static --mock-k8s-client=true --mock-mr-client=true --dev-mode=true --dev-mode-port=8080  --standalone-mode=true
+go run ./cmd/main.go  --port=4000 --static-assets-dir=./static --mock-k8s-client=true --mock-chat-client=true --dev-mode=true --dev-mode-port=8080  --standalone-mode=true
 ```
 
 Once you have both services ready, you can open the dashboard locally at: `http://localhost:4010`. The dev server will reload automatically when you make changes.

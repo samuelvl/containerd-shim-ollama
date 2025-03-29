@@ -1,30 +1,56 @@
 package models
 
-// CustomProperties represents custom properties for a model
-type ModelCustomProperties map[string]interface{}
+type BaseModel struct {
+	Catalog    string `json:"catalog,omitempty"`
+	Repository string `json:"repository,omitempty"`
+	Name       string `json:"name,omitempty"`
+}
 
-// StatusModel represents the status of a model
-type StatusModel string
+type ArtifactsProtocol string
 
 const (
-	StatusModelNotDeployed StatusModel = "NOT_DEPLOYED"
-	StatusModelDeployed    StatusModel = "DEPLOYED"
-	StatusModelError       StatusModel = "ERROR"
+	ProtocolOCI ArtifactsProtocol = "oci"
 )
 
-// OllamaModel extends ModelBase with additional fields specific to Ollama models
-type OllamaModel struct {
-	ID                       string                `json:"id"`
-	Name                     string                `json:"name"`
-	ExternalID               *string               `json:"externalID,omitempty"`
-	Description              *string               `json:"description,omitempty"`
-	CreateTimeSinceEpoch     string                `json:"createTimeSinceEpoch"`
-	LastUpdateTimeSinceEpoch string                `json:"lastUpdateTimeSinceEpoch"`
-	CustomProperties         ModelCustomProperties `json:"customProperties"`
-	Image                    *string               `json:"image,omitempty"`
-	Tags                     []string              `json:"tags,omitempty"`
-	Author                   *string               `json:"author,omitempty"`
-	Owner                    *string               `json:"owner,omitempty"`
-	Deployed                 bool                  `json:"deployed"`
-	Status                   StatusModel           `json:"status"`
+type CatalogArtifacts struct {
+	Protocol             ArtifactsProtocol `json:"protocol,omitempty"`
+	CreateTimeSinceEpoch int64             `json:"createTimeSinceEpoch,omitempty"`
+	Tags                 []string          `json:"tags,omitempty"`
+	URI                  string            `json:"uri,omitempty"`
+}
+
+type CatalogModelDeploymentStatus string
+
+const (
+	StatusDeployed   CatalogModelDeploymentStatus = "deployed"
+	StatusUndeployed CatalogModelDeploymentStatus = "undeployed"
+	StatusPending    CatalogModelDeploymentStatus = "pending"
+	StatusError      CatalogModelDeploymentStatus = "error"
+)
+
+type CatalogModel struct {
+	Repository               string                       `json:"repository"`
+	Name                     string                       `json:"name"`
+	Provider                 string                       `json:"provider,omitempty"`
+	Description              string                       `json:"description,omitempty"`
+	LongDescription          string                       `json:"longDescription,omitempty"`
+	Logo                     string                       `json:"logo,omitempty"`
+	Readme                   string                       `json:"readme,omitempty"`
+	Language                 []string                     `json:"language,omitempty"`
+	License                  string                       `json:"license,omitempty"`
+	LicenseLink              string                       `json:"licenseLink,omitempty"`
+	Maturity                 string                       `json:"maturity,omitempty"`
+	LibraryName              string                       `json:"libraryName,omitempty"`
+	BaseModel                []BaseModel                  `json:"baseModel,omitempty"`
+	Labels                   []string                     `json:"labels,omitempty"`
+	Tasks                    []string                     `json:"tasks,omitempty"`
+	CreateTimeSinceEpoch     int64                        `json:"createTimeSinceEpoch,omitempty"`
+	LastUpdateTimeSinceEpoch int64                        `json:"lastUpdateTimeSinceEpoch,omitempty"`
+	Artifacts                []CatalogArtifacts           `json:"artifacts,omitempty"`
+	Status                   CatalogModelDeploymentStatus `json:"status"`
+}
+
+type ModelCatalogSource struct {
+	Source string         `json:"source"`
+	Models []CatalogModel `json:"models"`
 }

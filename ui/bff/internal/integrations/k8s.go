@@ -34,6 +34,7 @@ type KubernetesClientInterface interface {
 	PerformSARonSpecificService(user string, groups []string, namespace string, serviceName string) (bool, error)
 	IsClusterAdmin(user string) (bool, error)
 	GetNamespaces(user string, groups []string) ([]corev1.Namespace, error)
+	GetConfigMap(ctx context.Context, namespace string, name string) (*corev1.ConfigMap, error)
 }
 
 type ServiceDetails struct {
@@ -401,4 +402,21 @@ func (kc *KubernetesClient) PerformSARonSpecificService(user string, groups []st
 	}
 
 	return true, nil
+}
+
+func (kc *KubernetesClient) GetConfigMap(ctx context.Context, namespace string, name string) (*corev1.ConfigMap, error) {
+	if namespace == "" {
+		return nil, fmt.Errorf("namespace cannot be empty")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	cm := &corev1.ConfigMap{}
+	err := kc.ControllerRuntimeClient.Get(ctx, client.ObjectKey{Namespace: namespace, Name: name}, cm)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get config map %s/%s: %w", namespace, name, err)
+	}
+
+	return cm, nil
 }
