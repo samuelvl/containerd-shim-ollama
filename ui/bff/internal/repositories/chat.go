@@ -29,10 +29,11 @@ func (c *ChatRepository) Generate(ctx context.Context, client integrations.HTTPC
 	if err != nil {
 		return models.GenerateResponse{}, fmt.Errorf("error marshalling request: %w", err)
 	}
+
 	// Send the request to the Ollama API
 	responseBytes, err := client.POST("/api/generate", bytes.NewReader(requestBytes))
 	if err != nil {
-		return models.GenerateResponse{}, err
+		return models.GenerateResponse{}, fmt.Errorf("error generating completion: %w", err)
 	}
 
 	// Parse the response

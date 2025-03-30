@@ -28,7 +28,7 @@ const (
 	NamespaceListPath = ApiPathPrefix + "/namespaces"
 	SettingsPath      = ApiPathPrefix + "/settings"
 	ModelPath         = ApiPathPrefix + "/models"
-	GeneratePath      = ApiPathPrefix + "/generate/:modelName"
+	GeneratePath      = ApiPathPrefix + "/generate"
 )
 
 type App struct {

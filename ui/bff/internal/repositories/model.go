@@ -44,10 +44,6 @@ func (m *ModelRepository) GetAllModels(sessionCtx context.Context, client k8s.Ku
 		return []models.ModelCatalogSource{}, fmt.Errorf("error fetching services: %w", err)
 	}
 
-	// Debug: Print the services list
-	// TODO: Samu!! Why it's not getting the faked services created in k8s_mock.go??
-	fmt.Printf("Found services in namespace %s: %v\n", namespace, services)
-
 	// Create a map of service names for easy lookup
 	serviceNames := make(map[string]bool)
 	for _, service := range services {
@@ -61,7 +57,7 @@ func (m *ModelRepository) GetAllModels(sessionCtx context.Context, client k8s.Ku
 			if serviceNames[model.Name] {
 				model.Status = "deployed"
 			} else {
-				model.Status = "deployed" // TODO: change to undeployed once we fixed the services above
+				model.Status = "undeployed"
 			}
 		}
 	}

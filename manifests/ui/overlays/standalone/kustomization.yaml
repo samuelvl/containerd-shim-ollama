@@ -10,6 +10,8 @@ images:
   newName: ghcr.io/samuelvl/containerd-shim-ollama/ui
   newTag: latest
 
+namespace: kubeflow
+
 patches:
 - path: ollama-ui-deployment.yaml
   target:

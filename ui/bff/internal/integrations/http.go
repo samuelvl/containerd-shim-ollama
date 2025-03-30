@@ -17,6 +17,7 @@ type HTTPClientInterface interface {
 	GET(url string) ([]byte, error)
 	POST(url string, body io.Reader) ([]byte, error)
 	PATCH(url string, body io.Reader) ([]byte, error)
+	GetBaseURL() string
 }
 
 type HTTPClient struct {
@@ -54,6 +55,10 @@ func NewHTTPClient(logger *slog.Logger, ollamaID string, baseURL string) (HTTPCl
 
 func (c *HTTPClient) GetOllamaID() string {
 	return c.OllamaID
+}
+
+func (c *HTTPClient) GetBaseURL() string {
+	return c.baseURL
 }
 
 func (c *HTTPClient) GET(url string) ([]byte, error) {
@@ -125,10 +130,11 @@ func (c *HTTPClient) POST(url string, body io.Reader) ([]byte, error) {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	if response.StatusCode != http.StatusCreated {
+	// Accept both 200 (OK) and 201 (Created) as success responses
+	if response.StatusCode != http.StatusOK && response.StatusCode != http.StatusCreated {
 		var errorResponse ErrorResponse
 		if err := json.Unmarshal(responseBody, &errorResponse); err != nil {
-			return nil, fmt.Errorf("error unmarshalling error response: %w", err)
+			return nil, fmt.Errorf("HTTP %d: %s", response.StatusCode, string(responseBody))
 		}
 		httpError := &HTTPError{
 			StatusCode:    response.StatusCode,
