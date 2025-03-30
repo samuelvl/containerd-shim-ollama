@@ -94,7 +94,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/OllamaModel"
+                      $ref: "#/components/schemas/ModelCatalogSource"
         "500":
           $ref: "#/components/responses/InternalServerError"
       operationId: getModels
@@ -113,7 +113,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OllamaModelPatch"
+              $ref: "#/components/schemas/CatalogModelPatch"
         required: true
       responses:
         "200":
@@ -127,7 +127,7 @@ paths:
                     type: object
                     description: Metadata about the response
                   data:
-                    $ref: "#/components/schemas/OllamaModel"
+                    $ref: "#/components/schemas/CatalogModel"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -137,7 +137,7 @@ paths:
       operationId: patchModel
       summary: Update a specific model
       description: Updates an existing Ollama model with partial data.
-  /api/v1/ollama/generate:
+  /api/v1/generate/{modelName}:
     summary: Path used to generate model completions.
     description: >-
       The REST endpoint/path used to generate a response for a given prompt with a provided model.
@@ -388,87 +388,148 @@ components:
         - ERROR
         - UPDATING
       description: The status of an Ollama model
-    ModelBase:
+    CatalogModel:
       type: object
       required:
-        - id
-        - name
-        - createTimeSinceEpoch
-        - lastUpdateTimeSinceEpoch
-        - customProperties
+      - repository
+      - name
+      - status
       properties:
-        id:
+        repository:
           type: string
-          description: Unique identifier of the model
+          description: Repository name where the model is stored
+          example: "ollama"
         name:
           type: string
           description: Name of the model
-        externalID:
+          example: "qwen2.5-vl-7b-instruct"
+        provider:
           type: string
-          description: External identifier of the model
+          description: Provider or creator of the model
+          example: "Alibaba"
         description:
           type: string
-          description: Description of the model
-        createTimeSinceEpoch:
+          description: Short description of the model
+          example: "A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks."
+        longDescription:
           type: string
-          description: Time when the model was created (milliseconds since epoch)
-        lastUpdateTimeSinceEpoch:
+          description: Detailed description of the model
+          example: "A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks."
+        logo:
           type: string
-          description: Time when the model was last updated (milliseconds since epoch)
-        image:
+          description: Base64 encoded image or URL of the model logo
+          example: "data:image/webp;base64,UklGRjQbAABXRUJQVl..."
+        readme:
           type: string
-          description: Image URL or identifier for the model
-        tags:
+          description: Readme content in markdown format
+          example: "# Qwen2.5-VL-7B-Instruct\n\n## Introduction\n\nIn the past five months..."
+        language:
           type: array
           items:
             type: string
-          description: Tags associated with the model
-    OllamaModel:
-      allOf:
-        - $ref: "#/components/schemas/ModelBase"
-        - type: object
-          required:
-            - status
-          properties:
-          deployed:
-            type: boolean
-            description: Deployment status
-            author:
-              type: string
-              description: Author of the model
-            owner:
-              type: string
-              description: Owner of the model
-            status:
-              $ref: "#/components/schemas/StatusModel"
-    OllamaModelPatch:
+            description: Supported languages
+            example: ["ar", "cs", "de", "en", "es", "fr", "it", "ja", "ko", "nl", "pt", "zh"]
+        license:
+          type: string
+          description: License type
+          example: "apache-2.0"
+        licenseLink:
+          type: string
+          description: URL to the license text
+          example: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        maturity:
+          type: string
+          description: Maturity level of the model
+          example: "Generally Available"
+        libraryName:
+          type: string
+          description: Name of the library used by the model
+          example: "transformers"
+        baseModel:
+          type: array
+          items:
+            type: object
+            properties:
+              repository:
+                type: string
+                example: "rhelai1"
+              name:
+                type: string
+                example: "granite-8b-code-base"
+        labels:
+          type: array
+          items:
+            type: string
+            description: Labels or tags associated with the model
+            example: ["language", "qwen2"]
+        tasks:
+          type: array
+          items:
+            type: string
+            description: Tasks the model is designed for
+            example: ["text-generation"]
+        createTimeSinceEpoch:
+          type: integer
+          format: int64
+          description: Time when the model was created (milliseconds since epoch)
+          example: 1733514949000
+        lastUpdateTimeSinceEpoch:
+          type: integer
+          format: int64
+          description: Time when the model was last updated (milliseconds since epoch)
+          example: 1734637721000
+        artifacts:
+          type: array
+          items:
+            type: object
+            properties:
+              protocol:
+                type: string
+                description: Protocol used for artifacts
+                example: "OCI"
+              createTimeSinceEpoch:
+                type: integer
+                format: int64
+                description: Creation time of artifact
+                example: 1733514949000
+              tags:
+                type: array
+                items:
+                  type: string
+                  description: Tags for the artifact
+                  example: ["2.5.0"]
+              uri:
+                type: string
+                description: URI to the artifact
+                example: "oci://ghcr.io/ollama/qwen2.5-vl-7b-instruct:2.5.0"
+        status:
+          $ref: "#/components/schemas/CatalogModelDeploymentStatus"
+    CatalogModelDeploymentStatus:
+      type: string
+      enum:
+      - DEPLOYED
+      - PENDING
+      - ERROR
+      description: The deployment status of a catalog model
+    ModelCatalogSource:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Source of the model catalog
+          example: "ollama"
+        models:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogModel"
+    CatalogModelPatch:
       type: object
       properties:
         name:
           type: string
           description: Name of the model
-        description:
-          type: string
-          description: Description of the model
-        deployed:
-          type: boolean
-          description: Deployment status
-        image:
-          type: string
-          description: Image URL or identifier for the model
-        tags:
-          type: array
-          items:
-            type: string
-          description: Tags associated with the model
-        author:
-          type: string
-          description: Author of the model
-        owner:
-          type: string
-          description: Owner of the model
         status:
-          $ref: "#/components/schemas/StatusModel"
+          $ref: "#/components/schemas/CatalogModelDeploymentStatus"
     GenerateRequest:
       type: object
       required:

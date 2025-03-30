@@ -27,6 +27,8 @@ const (
 	UserPath          = ApiPathPrefix + "/user"
 	NamespaceListPath = ApiPathPrefix + "/namespaces"
 	SettingsPath      = ApiPathPrefix + "/settings"
+	ModelPath         = ApiPathPrefix + "/models"
+	GeneratePath      = ApiPathPrefix + "/generate/:modelName"
 )
 
 type App struct {
@@ -54,7 +56,7 @@ func NewApp(cfg config.EnvConfig, logger *slog.Logger) (*App, error) {
 
 	var ollamaClient repositories.OllamaClientInterface
 
-	if cfg.MockMRClient {
+	if cfg.MockChatClient {
 		//mock all model calls
 		// TODO: implement when we have ollama client
 		ollamaClient, err = mocks.NewOllamaClient(logger)
@@ -92,6 +94,10 @@ func (app *App) Routes() http.Handler {
 
 	// Kubernetes routes
 	apiRouter.GET(UserPath, app.UserHandler)
+	apiRouter.GET(ModelPath, app.AttachNamespace((app.PerformSARonGetListServicesByNamespace(app.GetAllModelsHandler))))
+
+	// Chat routes
+	apiRouter.POST(GeneratePath, app.AttachNamespace(app.AttachRESTClient(app.GenerateCompletionHandler)))
 
 	if app.config.StandaloneMode {
 		apiRouter.GET(NamespaceListPath, app.GetNamespacesHandler)

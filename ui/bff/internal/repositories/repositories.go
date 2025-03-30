@@ -7,6 +7,7 @@ type Repositories struct {
 	OllamaClient OllamaClientInterface
 	User         *UserRepository
 	Namespace    *NamespaceRepository
+	Chat         *ChatRepository
 }
 
 func NewRepositories(OllamaClient OllamaClientInterface) *Repositories {
@@ -16,5 +17,6 @@ func NewRepositories(OllamaClient OllamaClientInterface) *Repositories {
 		OllamaClient: OllamaClient,
 		User:         NewUserRepository(),
 		Namespace:    NewNamespaceRepository(),
+		Chat:         NewChatRepository(OllamaClient),
 	}
 }

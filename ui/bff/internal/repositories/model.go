@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	k8s "github.com/kubeflow/ollama/ui/bff/internal/integrations"
@@ -15,44 +16,72 @@ func NewModelRepository() *ModelRepository {
 	return &ModelRepository{}
 }
 
-func (m *ModelRepository) GetAllModels(sessionCtx context.Context, client k8s.KubernetesClientInterface, namespace string) ([]models.OllamaModel, error) {
-
-	resources, err := client.GetServiceDetails(sessionCtx, namespace)
+func (m *ModelRepository) GetAllModels(sessionCtx context.Context, client k8s.KubernetesClientInterface, namespace string) ([]models.ModelCatalogSource, error) {
+	// Get the ConfigMap with model catalog sources
+	configMap, err := client.GetConfigMap(sessionCtx, namespace, "model-catalog-sources")
 	if err != nil {
-		return nil, fmt.Errorf("error fetching models: %w", err)
+		// If config map doesn't exist, return empty array
+		return []models.ModelCatalogSource{}, nil
 	}
 
-	var registries = []models.OllamaModel{}
-	for _, s := range resources {
-		serverAddress := m.ResolveServerAddress(s.ClusterIP, s.HTTPPort)
-		registry := models.OllamaModel{
-			Name:   s.Name,
-			ID:     serverAddress,
-			Status: "Running",
+	// Extract modelCatalogSources data from ConfigMap
+	modelCatalogSourcesData, exists := configMap.Data["modelCatalogSources"]
+	if !exists {
+		return []models.ModelCatalogSource{}, nil
+	}
+
+	// Parse the JSON data
+	var parsedData struct {
+		Sources []models.ModelCatalogSource `json:"sources"`
+	}
+	if err := json.Unmarshal([]byte(modelCatalogSourcesData), &parsedData); err != nil {
+		return []models.ModelCatalogSource{}, fmt.Errorf("error parsing model catalog sources: %w", err)
+	}
+
+	// Get all services in the namespace
+	services, err := client.GetServiceDetails(sessionCtx, namespace)
+	if err != nil {
+		return []models.ModelCatalogSource{}, fmt.Errorf("error fetching services: %w", err)
+	}
+
+	// Debug: Print the services list
+	// TODO: Samu!! Why it's not getting the faked services created in k8s_mock.go??
+	fmt.Printf("Found services in namespace %s: %v\n", namespace, services)
+
+	// Create a map of service names for easy lookup
+	serviceNames := make(map[string]bool)
+	for _, service := range services {
+		serviceNames[service.Name] = true
+	}
+
+	// Update status for each model in each source
+	for i := range parsedData.Sources {
+		for j := range parsedData.Sources[i].Models {
+			model := &parsedData.Sources[i].Models[j]
+			if serviceNames[model.Name] {
+				model.Status = "deployed"
+			} else {
+				model.Status = "deployed" // TODO: change to undeployed once we fixed the services above
+			}
 		}
-		registries = append(registries, registry)
 	}
 
-	return registries, nil
+	return parsedData.Sources, nil
+
 }
 
-func (m *ModelRepository) GetModel(sessionCtx context.Context, client k8s.KubernetesClientInterface, namespace string, ollamaID string) (models.OllamaModel, error) {
+// func (m *ModelRepository) GetModel(sessionCtx context.Context, client k8s.KubernetesClientInterface, namespace string, ollamaID string) (models.OllamaModel, error) {
 
-	s, err := client.GetServiceDetailsByName(sessionCtx, namespace, ollamaID)
-	if err != nil {
-		return models.OllamaModel{}, fmt.Errorf("error fetching model registry: %w", err)
-	}
+// 	s, err := client.GetServiceDetailsByName(sessionCtx, namespace, ollamaID)
+// 	if err != nil {
+// 		return models.OllamaModel{}, fmt.Errorf("error fetching model registry: %w", err)
+// 	}
 
-	modelRegistry := models.OllamaModel{
-		Name:   s.Name,
-		ID:     ollamaID,
-		Status: "Running",
-	}
+// 	modelRegistry := models.OllamaModel{
+// 		Name:   s.Name,
+// 		ID:     ollamaID,
+// 		Status: "Running",
+// 	}
 
-	return modelRegistry, nil
-}
-
-func (m *ModelRepository) ResolveServerAddress(clusterIP string, httpPort int32) string {
-	url := fmt.Sprintf("http://%s:%d/api/model_registry/v1alpha3", clusterIP, httpPort)
-	return url
-}
+// 	return modelRegistry, nil
+// }

@@ -3,6 +3,7 @@ import { FetchStateObject } from '~/shared/types';
 import { useMakeFetchObject } from '~/shared/utilities/useMakeFetchObject';
 import { ModelCatalogSource } from '~/app/concepts/modelCatalog/types';
 import useModelCatalogSources from '~/app/concepts/modelCatalog/useModelCatalogSources';
+import useQueryParamNamespaces from '~/shared/hooks/useQueryParamNamespaces';
 
 export type ModelCatalogContextType = {
   modelCatalogSources: FetchStateObject<ModelCatalogSource[]>;
@@ -23,7 +24,8 @@ export const ModelCatalogContext = React.createContext<ModelCatalogContextType>(
 export const ModelCatalogContextProvider: React.FC<ModelCatalogContextProviderProps> = ({
   children,
 }) => {
-  const modelCatalogSources = useMakeFetchObject(useModelCatalogSources());
+  const queryParams = useQueryParamNamespaces();
+  const modelCatalogSources = useMakeFetchObject(useModelCatalogSources(queryParams));
 
   const contextValue = React.useMemo(
     () => ({

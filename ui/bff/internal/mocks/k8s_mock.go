@@ -127,6 +127,11 @@ func setupMock(mockK8sClient client.Client, ctx context.Context) error {
 		return err
 	}
 
+	err = createNamespace(mockK8sClient, ctx, "test-working")
+	if err != nil {
+		return err
+	}
+
 	err = createNamespace(mockK8sClient, ctx, "dora-namespace")
 	if err != nil {
 		return err
@@ -137,23 +142,12 @@ func setupMock(mockK8sClient client.Client, ctx context.Context) error {
 		return err
 	}
 
-	err = createService(mockK8sClient, ctx, "ollama", "kubeflow", "Ollama", "Ollama Description", "10.0.0.10", "ollama")
+	err = createService(mockK8sClient, ctx, "qwen2-vl-7b-instruct", "kubeflow", "Qwen2", "Qwen 2 Description", "10.0.0.10", "qwen2")
 	if err != nil {
 		return err
 	}
-	err = createService(mockK8sClient, ctx, "ollama-one", "kubeflow", "Ollama One", "Ollama One description", "10.0.0.11", "ollama")
-	if err != nil {
-		return err
-	}
-	err = createService(mockK8sClient, ctx, "ollama-dora", "dora-namespace", "Ollama Dora", "Ollama Dora description", "10.0.0.12", "ollama")
-	if err != nil {
-		return err
-	}
-	err = createService(mockK8sClient, ctx, "ollama-bella", "bella-namespace", "Ollama Bella", "Ollama Bella description", "10.0.0.13", "ollama")
-	if err != nil {
-		return err
-	}
-	err = createService(mockK8sClient, ctx, "non-ollama", "kubeflow", "Not a Ollama", "Not a Ollama Bella description", "10.0.0.14", "")
+
+	err = createService(mockK8sClient, ctx, "qwen2-vl-7b-instruct", "bella-namespace", "Qwen2", "Qwen 2 Description", "10.0.0.12", "qwen2")
 	if err != nil {
 		return err
 	}
@@ -200,6 +194,14 @@ func (m *KubernetesClientMock) GetServiceDetails(sessionCtx context.Context, nam
 	}
 
 	return originalServices, nil
+}
+
+func (m *KubernetesClientMock) GetConfigMap(sessionCtx context.Context, namespace string, name string) (*corev1.ConfigMap, error) {
+	// In the mock implementation, we return data from the static mock
+	// This follows the pattern similar to GetServiceDetailsByName
+	configMap := GetConfigMapMock()
+
+	return &configMap, nil
 }
 
 func (m *KubernetesClientMock) GetServiceDetailsByName(sessionCtx context.Context, namespace string, serviceName string) (k8s.ServiceDetails, error) {
