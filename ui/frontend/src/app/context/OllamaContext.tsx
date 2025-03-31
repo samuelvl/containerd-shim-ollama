@@ -4,23 +4,23 @@ import useQueryParamNamespaces from '~/shared/hooks/useQueryParamNamespaces';
 import useOllamaAPIState, { OllamaAPIState } from '~/app/hooks/useOllamaAPIState';
 import { URL_PREFIX } from '~/shared/utilities/const';
 
-export type ModelRegistryContextType = {
+export type OllamaContextType = {
   apiState: OllamaAPIState;
   refreshAPIState: () => void;
 };
 
-type ModelRegistryContextProviderProps = {
+type OllamaContextProviderProps = {
   children: React.ReactNode;
   modelRegistryName: string;
 };
 
-export const ModelRegistryContext = React.createContext<ModelRegistryContextType>({
+export const OllamaContext = React.createContext<OllamaContextType>({
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   apiState: { apiAvailable: false, api: null as unknown as OllamaAPIState['api'] },
   refreshAPIState: () => undefined,
 });
 
-export const ModelRegistryContextProvider: React.FC<ModelRegistryContextProviderProps> = ({
+export const OllamaContextProvider: React.FC<OllamaContextProviderProps> = ({
   children,
   modelRegistryName,
 }) => {
@@ -31,7 +31,7 @@ export const ModelRegistryContextProvider: React.FC<ModelRegistryContextProvider
   const [apiState, refreshAPIState] = useOllamaAPIState(hostPath, queryParams);
 
   return (
-    <ModelRegistryContext.Provider
+    <OllamaContext.Provider
       value={React.useMemo(
         () => ({
           apiState,
@@ -41,6 +41,6 @@ export const ModelRegistryContextProvider: React.FC<ModelRegistryContextProvider
       )}
     >
       {children}
-    </ModelRegistryContext.Provider>
+    </OllamaContext.Provider>
   );
 };

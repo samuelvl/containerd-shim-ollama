@@ -6,7 +6,12 @@ on:
     tags:
       - 'v*'
     paths:
-      - '/ui/**'
+      - 'ui/**'
+      - '!LICENSE*'
+      - '!DOCKERFILE*'
+      - '!**.gitignore'
+      - '!**.md'
+      - '!**.txt'
 env:
   IMAGE_NAME: ui
   REGISTRY: ghcr.io

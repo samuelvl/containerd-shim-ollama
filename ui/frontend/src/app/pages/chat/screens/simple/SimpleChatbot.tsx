@@ -15,9 +15,9 @@ import {
   MessageBox,
   MessageProps,
 } from '@patternfly/chatbot';
+import { Brand, DropdownItem, DropdownList } from '@patternfly/react-core';
 import userAvatar from '~/shared/images/user_avatar.svg';
 import { CatalogModel } from '~/app/concepts/modelCatalog/types';
-import { Brand, DropdownItem, DropdownList } from '@patternfly/react-core';
 
 interface SimpleChatProps {
   isVisible: boolean;
