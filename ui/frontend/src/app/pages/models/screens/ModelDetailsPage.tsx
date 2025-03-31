@@ -136,7 +136,7 @@ const ModelDetailsPage: React.FC = () => {
                   spaceItems={{ default: 'spaceItemsSm' }}
                   alignItems={{ default: 'alignItemsCenter' }}
                 >
-                  <FlexItem>{decodedParams.modelName}</FlexItem>
+                  <FlexItem>{model?.displayName}</FlexItem>
                   {model && (
                     <Label variant="outline" icon={<RhUiTagIcon />}>
                       {getTagFromModel(model)}

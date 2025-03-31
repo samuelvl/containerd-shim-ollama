@@ -31,6 +31,7 @@ const (
 type CatalogModel struct {
 	Repository               string                       `json:"repository"`
 	Name                     string                       `json:"name"`
+	DisplayName              string                       `json:"displayName"`
 	Provider                 string                       `json:"provider,omitempty"`
 	Description              string                       `json:"description,omitempty"`
 	LongDescription          string                       `json:"longDescription,omitempty"`

@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -12,24 +11,22 @@ import (
 	"github.com/kubeflow/ollama/ui/bff/internal/models"
 )
 
-type GenerateEnvelope Envelope[models.GenerateResponse, None]
+type GenerateResponseEnvelope Envelope[models.GenerateResponse, None]
+type GenerateRequestEnvelope Envelope[models.GenerateRequest, None]
 
 // GenerateCompletionHandler handles requests to generate completions from an LLM
 func (app *App) GenerateCompletionHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Read the request body
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		app.badRequestResponse(w, r, fmt.Errorf("error reading request body: %w", err))
-		return
-	}
-	defer r.Body.Close()
 
-	// Parse the request body
-	var generateRequest models.GenerateRequest
-	if err := json.Unmarshal(body, &generateRequest); err != nil {
-		app.badRequestResponse(w, r, fmt.Errorf("error parsing request body: %w", err))
+	var envelope GenerateRequestEnvelope
+	if err := json.NewDecoder(r.Body).Decode(&envelope); err != nil {
+		app.serverErrorResponse(w, r, fmt.Errorf("error decoding JSON:: %v", err.Error()))
 		return
 	}
+
+	data := envelope.Data
+
+	// Extract the generate request from the envelope data
+	generateRequest := data
 
 	// Get HTTP client from context
 	client, ok := r.Context().Value(constants.OllamaHttpClientKey).(integrations.HTTPClientInterface)
@@ -54,7 +51,7 @@ func (app *App) GenerateCompletionHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// Wrap the response in the envelope and send it
-	env := GenerateEnvelope{
+	env := GenerateResponseEnvelope{
 		Data: response,
 	}
 

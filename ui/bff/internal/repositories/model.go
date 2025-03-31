@@ -44,6 +44,12 @@ func (m *ModelRepository) GetAllModels(sessionCtx context.Context, client k8s.Ku
 		return []models.ModelCatalogSource{}, fmt.Errorf("error fetching services: %w", err)
 	}
 
+	// Log services for debugging
+	fmt.Printf("Services found: %d\n", len(services))
+	for i, service := range services {
+		fmt.Printf("Service %d: %s\n", i+1, service.Name)
+	}
+
 	// Create a map of service names for easy lookup
 	serviceNames := make(map[string]bool)
 	for _, service := range services {

@@ -20,6 +20,7 @@ export type CatalogArtifacts = {
 export type CatalogModel = {
   repository: string;
   name: string;
+  displayName: string;
   provider?: string;
   description?: string;
   longDescription?: string;

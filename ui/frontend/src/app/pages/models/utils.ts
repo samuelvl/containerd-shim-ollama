@@ -12,12 +12,6 @@ export const findModelFromModelCatalogSources = (
   modelName: string | undefined,
   tag: string | undefined,
 ): CatalogModel | null => {
-  console.log('modelCatalogSources', modelCatalogSources);
-  console.log('source', source);
-  console.log('repositoryName', repositoryName);
-  console.log('modelName', modelName);
-  console.log('tag', tag);
-
   const modelCatalogSource = modelCatalogSources.find((mcSource) => mcSource.source === source);
   if (!modelCatalogSource) {
     return null;
