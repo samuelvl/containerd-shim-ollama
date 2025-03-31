@@ -44,11 +44,13 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}
         tags: |
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=main,enable={{is_default_branch}}
+          type=sha
           type=ref,event=branch
           type=ref,event=pr
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
-          type=sha
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
@@ -57,5 +59,6 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        platforms: linux/amd64,linux/arm64
         cache-from: type=gha
         cache-to: type=gha,mode=max

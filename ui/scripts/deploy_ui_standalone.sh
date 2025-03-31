@@ -7,14 +7,17 @@ command -v kind >/dev/null 2>&1 || { echo >&2 "kind is required but it's not ins
 
 echo "WARNING: You must have proper push / pull access to ${IMG_UI_STANDALONE}. If this is a new image, make sure you set it to public to avoid issues."
 
+# Get the root directory of the project
+ROOT_DIR=$(cd $(dirname "$0")/../.. && pwd)
+
 # Set Kubernetes context to kind
 echo "Setting Kubernetes context to kind..."
-if kubectl config use-context kind-kind  >/dev/null 2>&1; then
+if kubectl config use-context kind-ollama-shim  >/dev/null 2>&1; then
   echo "Ollama deployment already exists. Skipping to step 4."
 else
     # Step 1: Create a kind cluster
     echo "Creating kind cluster..."
-    make kind
+    (cd $ROOT_DIR && make kind)
 
     # Verify cluster creation
     echo "Verifying cluster..."
@@ -22,15 +25,19 @@ else
 
     # Step 2: Create kubeflow namespace
     echo "Creating kubeflow namespace..."
-    kubectl create namespace ai-models
+    kubectl create namespace kubeflow
+
+    echo "Deploying the model..."
+    (cd $ROOT_DIR && kubectl apply -n kubeflow -f ./manifests/models/qwen2-model.yaml)
 fi
 
 echo "Editing kustomize image..."
-pushd  ../../manifests/kustomize/ui/overlays/standalone
+pushd  $ROOT_DIR/manifests/ui/base
 kustomize edit set image ollama-ui-standalone=${IMG_UI_STANDALONE}
 
 # Step 4: Deploy model registry UI
 echo "Deploying Ollama UI..."
+pushd  $ROOT_DIR/manifests/ui/overlays/standalone
 kustomize edit set namespace kubeflow
 kubectl apply -n kubeflow -k .
 
