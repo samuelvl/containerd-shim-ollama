@@ -4,12 +4,12 @@ import { OllamaModelAPIs } from '~/app/concepts/chat/types';
 import { generate } from '~/app/api/service';
 import useAPIState from '~/shared/api/useAPIState';
 
-export type OllamaAPIState = APIState<OllamaModelAPIs>;
+export type ChatAPIState = APIState<OllamaModelAPIs>;
 
-const useOllamaAPIState = (
+const useChatAPIState = (
   hostPath: string | null,
   queryParameters?: Record<string, unknown>,
-): [apiState: OllamaAPIState, refreshAPIState: () => void] => {
+): [apiState: ChatAPIState, refreshAPIState: () => void] => {
   const createAPI = React.useCallback(
     (path: string) => ({
       generate: generate(path, queryParameters),
@@ -20,4 +20,4 @@ const useOllamaAPIState = (
   return useAPIState(hostPath, createAPI);
 };
 
-export default useOllamaAPIState;
+export default useChatAPIState;
