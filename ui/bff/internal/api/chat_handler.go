@@ -16,13 +16,6 @@ type GenerateEnvelope Envelope[models.GenerateResponse, None]
 
 // GenerateCompletionHandler handles requests to generate completions from an LLM
 func (app *App) GenerateCompletionHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Extract the model name from the URL
-	modelName := ps.ByName("modelName")
-	if modelName == "" {
-		app.badRequestResponse(w, r, fmt.Errorf("missing model name in URL"))
-		return
-	}
-
 	// Read the request body
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -37,9 +30,6 @@ func (app *App) GenerateCompletionHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestResponse(w, r, fmt.Errorf("error parsing request body: %w", err))
 		return
 	}
-
-	// Override the model name in the request with the one from the URL
-	generateRequest.Model = modelName
 
 	// Get HTTP client from context
 	client, ok := r.Context().Value(constants.OllamaHttpClientKey).(integrations.HTTPClientInterface)

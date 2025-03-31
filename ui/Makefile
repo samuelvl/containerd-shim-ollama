@@ -36,7 +36,7 @@ dev-bff:
 
 .PHONY: dev-bff-debug
 dev-bff-debug:
-	cd bff && make run PORT=4000 MOCK_K8S_CLIENT=false MOCK_MR_CLIENT=false DEV_MODE=true STANDALONE_MODE=true
+	cd bff && make run PORT=4000 MOCK_K8S_CLIENT=false MOCK_MR_CLIENT=false DEV_MODE=true STANDALONE_MODE=true LOG_LEVEL=info
 
 .PHONY: dev-frontend
 dev-frontend:
