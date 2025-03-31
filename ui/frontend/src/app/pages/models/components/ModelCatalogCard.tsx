@@ -49,7 +49,7 @@ export const ModelCatalogCard: React.FC<{ model: CatalogModel; source: string }>
               fontWeight: 'var(--pf-t--global--font--weight--body--bold)',
             }}
           >
-            {model.name}
+            {model.displayName}
           </Link>
           <Split hasGutter>
             <SplitItem>

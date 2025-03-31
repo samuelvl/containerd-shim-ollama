@@ -6,7 +6,8 @@ import {
 
 export const mockCatalogModel = (partial?: Partial<CatalogModel>): CatalogModel => ({
   repository: 'ollama',
-  name: 'qwen2.5-vl-7b-instruct',
+  name: 'qwen2',
+  displayName: 'Qwen2.5 vl-7b-instruct',
   provider: 'Alibaba',
   description:
     'A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks.',

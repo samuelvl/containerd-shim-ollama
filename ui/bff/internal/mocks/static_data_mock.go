@@ -44,7 +44,8 @@ func GetConfigMapMock() corev1.ConfigMap {
 	  "models": [
 		{
 		  "repository": "ollama",
-		  "name": "qwen2-vl-7b-instruct",
+		  "name": "qwen2",
+		  "displayName": "Qwen2 vl-7b-instruct",
 		  "provider": "Alibaba",
 		  "description": "A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks.",
 		  "longDescription": "A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks.",
@@ -98,7 +99,8 @@ func GetConfigMapMock() corev1.ConfigMap {
 func GetAllModelsMock() []models.ModelCatalogSource {
 	model1 := models.CatalogModel{
 		Repository:      "ollama",
-		Name:            "qwen2.5-vl-7b-instruct",
+		Name:            "qwen2",
+		DisplayName:     "Qwen2.5 vl-7b-instruct",
 		Provider:        "Alibaba",
 		Description:     "A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks.",
 		LongDescription: "A fine-tuned model based on Qwen-2.5-VL-7B, optimized for instruction-following tasks.",

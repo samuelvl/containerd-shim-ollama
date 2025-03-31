@@ -7,7 +7,7 @@ export const generate =
   (hostPath: string, queryParams: Record<string, unknown> = {}) =>
   (opts: APIOptions, data: GenerateRequest): Promise<GenerateResponse> =>
     handleRestFailures(
-      restCREATE(hostPath, `api/generate`, assembleModularArchBody(data), queryParams, opts),
+      restCREATE(hostPath, `/generate`, assembleModularArchBody(data), queryParams, opts),
     ).then((response) => {
       if (isModArchResponse<GenerateResponse>(response)) {
         return response.data;

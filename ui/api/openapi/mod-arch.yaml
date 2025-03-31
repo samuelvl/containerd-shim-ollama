@@ -402,7 +402,11 @@ components:
         name:
           type: string
           description: Name of the model
-          example: "qwen2.5-vl-7b-instruct"
+          example: "qwen2"
+        displayName:
+          type: string
+          description: Name of the model
+          example: "Qwen 2.5-vl-7b-instruct"
         provider:
           type: string
           description: Provider or creator of the model

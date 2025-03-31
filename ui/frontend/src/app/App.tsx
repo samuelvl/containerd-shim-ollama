@@ -25,6 +25,7 @@ import NavSidebar from './NavSidebar';
 import AppRoutes from './AppRoutes';
 import { AppContext } from './AppContext';
 import NavBar from './NavBar';
+import { ChatContextProvider } from './concepts/chat/ChatContext';
 
 const App: React.FC = () => {
   const {
@@ -113,26 +114,28 @@ const App: React.FC = () => {
     </Bullseye>
   ) : (
     <AppContext.Provider value={contextValue}>
-      <Page
-        mainContainerId="primary-app-container"
-        masthead={
-          isStandalone() ? (
-            <NavBar
-              username={username}
-              onLogout={() => {
-                logout().then(() => window.location.reload());
-              }}
-            />
-          ) : (
-            ''
-          )
-        }
-        isManagedSidebar={isStandalone()}
-        sidebar={isStandalone() ? <NavSidebar /> : sidebar}
-      >
-        <AppRoutes />
-        <ToastNotifications />
-      </Page>
+      <ChatContextProvider>
+        <Page
+          mainContainerId="primary-app-container"
+          masthead={
+            isStandalone() ? (
+              <NavBar
+                username={username}
+                onLogout={() => {
+                  logout().then(() => window.location.reload());
+                }}
+              />
+            ) : (
+              ''
+            )
+          }
+          isManagedSidebar={isStandalone()}
+          sidebar={isStandalone() ? <NavSidebar /> : sidebar}
+        >
+          <AppRoutes />
+          <ToastNotifications />
+        </Page>
+      </ChatContextProvider>
     </AppContext.Provider>
   );
 };
