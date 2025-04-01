@@ -36,6 +36,7 @@ export type GenerateResponse = {
 
 export type GenerateAPI = (
   opts: APIOptions,
+  modelPath: string,
   data: GenerateRequest,
   onResponse?: (response: GenerateResponse) => void,
 ) => Promise<GenerateResponse>;

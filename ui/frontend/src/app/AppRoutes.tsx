@@ -42,7 +42,7 @@ export const useAdminSettings = (): NavDataItem[] => {
 export const useNavData = (): NavDataItem[] => [
   {
     label: 'Models',
-    path: '/models',
+    path: '/ollama',
   },
   // {
   //   label: 'Chat',

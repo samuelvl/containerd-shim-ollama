@@ -110,7 +110,7 @@ const ModelDetailsPage: React.FC = () => {
         breadcrumb={
           <Breadcrumb>
             <BreadcrumbItem>
-              <Link to="/models">Models</Link>
+              <Link to="/ollama">Models</Link>
             </BreadcrumbItem>
             <BreadcrumbItem isActive>{decodedParams.modelName}</BreadcrumbItem>
           </Breadcrumb>
