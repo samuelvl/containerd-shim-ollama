@@ -33,7 +33,7 @@ fi
 
 echo "Editing kustomize image..."
 pushd  $ROOT_DIR/manifests/ui/base
-kustomize edit set image ollama-ui-standalone=${IMG_UI_STANDALONE}
+kustomize edit set image ollama-ui=${IMG_UI_STANDALONE}
 
 # Step 4: Deploy model registry UI
 echo "Deploying Ollama UI..."
