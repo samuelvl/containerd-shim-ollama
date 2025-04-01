@@ -118,5 +118,8 @@ build: frontend-build bff-build
 run-local-mocked: frontend-build-standalone bff-build
 	rm -r ./bff/static-local-run && cp -r ./frontend/dist/ ./bff/static-local-run/ && cd bff && make run STATIC_ASSETS_DIR=./static-local-run MOCK_K8S_CLIENT=true DEV_MODE=true
 
+.PHONY: run-local-cluster
+run-local-cluster: frontend-build-standalone bff-build
+	rm -r ./bff/static-local-run && cp -r ./frontend/dist/ ./bff/static-local-run/ && cd bff && make run STATIC_ASSETS_DIR=./static-local-run MOCK_K8S_CLIENT=false MOCK_MR_CLIENT=false DEV_MODE=true STANDALONE_MODE=false
 
 	

@@ -56,8 +56,8 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/models" replace />} />
-      <Route path="/models/*" element={<ModelCatalogRoutes />} />
+      <Route path="/" element={<Navigate to="/ollama" replace />} />
+      <Route path="/ollama/*" element={<ModelCatalogRoutes />} />
       {/* <Route path="/chat/*" element={<ChatRoutes />} /> */}
       <Route path="*" element={<NotFound />} />
       {/* TODO: [Conditional render] Follow up add testing and conditional rendering when in standalone mode*/}
