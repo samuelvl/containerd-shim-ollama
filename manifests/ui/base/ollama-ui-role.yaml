@@ -102,3 +102,29 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ollama-ui
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ollama-ui-configmaps-reader
+rules:
+- apiGroups:
+    - ''
+  resources:
+    - configmaps
+  verbs:
+    - get
+    - list
+    - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ollama-ui-configmaps-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: ollama-ui
+roleRef:
+  kind: ClusterRole
+  name: ollama-ui-configmaps-reader
+  apiGroup: rbac.authorization.k8s.io

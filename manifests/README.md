@@ -40,7 +40,7 @@ data:
     {
         "menuLinks": [
             {
-                "icon": "assignment",
+                "icon": "store",
                 "link": "/ollama/",
                 "text": "Ollama",
                 "type": "item"
@@ -51,4 +51,5 @@ data:
 Or you can add it in one line with:
 
 ```bash
-kubectl get configmap centraldashboard-config -n kubeflow -o json | jq '.data.links |= (fromjson | .menuLinks += [{"icon": "assignment", "link": "/ollama/", "text": "Ollama", "type": "item"}] | tojson)' | kubectl apply -f - -n kubeflow
+kubectl get configmap centraldashboard-config -n kubeflow -o json | jq '.data.links |= (fromjson | .menuLinks += [{"icon": "store", "link": "/ollama/", "text": "Ollama", "type": "item"}] | tojson)' | kubectl apply -f - -n kubeflow
+```

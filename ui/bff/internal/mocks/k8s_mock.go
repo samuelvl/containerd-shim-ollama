@@ -142,12 +142,12 @@ func setupMock(mockK8sClient client.Client, ctx context.Context) error {
 		return err
 	}
 
-	err = createService(mockK8sClient, ctx, "qwen2-vl-7b-instruct", "kubeflow", "Qwen2", "Qwen 2 Description", "10.0.0.10", "ollama")
+	err = createService(mockK8sClient, ctx, "qwen2", "kubeflow", "Qwen2", "Qwen 2 Description", "10.0.0.10", "ollama")
 	if err != nil {
 		return err
 	}
 
-	err = createService(mockK8sClient, ctx, "qwen2-vl-7b-instruct", "bella-namespace", "Qwen2", "Qwen 2 Description", "10.0.0.12", "ollama")
+	err = createService(mockK8sClient, ctx, "qwen2", "bella-namespace", "Qwen2", "Qwen 2 Description", "10.0.0.12", "ollama")
 	if err != nil {
 		return err
 	}
