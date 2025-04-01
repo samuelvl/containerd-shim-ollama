@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
+	"github.com/kubeflow/ollama/ui/bff/internal/config"
 	"github.com/kubeflow/ollama/ui/bff/internal/constants"
 	helper "github.com/kubeflow/ollama/ui/bff/internal/helpers"
 	"github.com/kubeflow/ollama/ui/bff/internal/integrations"
@@ -105,19 +106,20 @@ func (app *App) EnableTelemetry(next http.Handler) http.Handler {
 func (app *App) AttachRESTClient(next func(http.ResponseWriter, *http.Request, httprouter.Params)) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-		ollamaID := ps.ByName(OllamaId)
+		modelNameID := ps.ByName("modelName")
+
+		fmt.Printf("Receiving model name id.... %s", modelNameID)
 
 		namespace, ok := r.Context().Value(constants.NamespaceHeaderParameterKey).(string)
 		if !ok || namespace == "" {
 			app.badRequestResponse(w, r, fmt.Errorf("missing namespace in the context"))
 		}
 
-		// model, err := app.repositories.Model.GetModel(r.Context(), app.kubernetesClient, namespace, ollamaID)
-		// if err != nil {
-		// 	app.notFoundResponse(w, r)
-		// 	return
-		// }
-		modelBaseURL := "http://localhost:8080"
+		modelBaseURL, err := resolveModelURL(r.Context(), namespace, modelNameID, app.kubernetesClient, app.config)
+		if err != nil {
+			app.notFoundResponse(w, r)
+			return
+		}
 
 		// If we are in dev mode, we need to resolve the server address to the local host
 		// to allow the client to connect to the model via port forwarded from the cluster to the local machine.
@@ -137,7 +139,7 @@ func (app *App) AttachRESTClient(next func(http.ResponseWriter, *http.Request, h
 			}
 		}
 
-		client, err := integrations.NewHTTPClient(restClientLogger, ollamaID, modelBaseURL)
+		client, err := integrations.NewHTTPClient(restClientLogger, modelNameID, modelBaseURL)
 		if err != nil {
 			app.serverErrorResponse(w, r, fmt.Errorf("failed to create Kubernetes client: %v", err))
 			return
@@ -145,6 +147,22 @@ func (app *App) AttachRESTClient(next func(http.ResponseWriter, *http.Request, h
 		ctx := context.WithValue(r.Context(), constants.OllamaHttpClientKey, client)
 		next(w, r.WithContext(ctx), ps)
 	}
+}
+
+func resolveModelURL(sessionCtx context.Context, namespace string, serviceName string, client integrations.KubernetesClientInterface, config config.EnvConfig) (string, error) {
+
+	serviceDetails, err := client.GetServiceDetailsByName(sessionCtx, namespace, serviceName)
+	if err != nil {
+		return "", err
+	}
+
+	if config.DevMode {
+		serviceDetails.ClusterIP = "localhost"
+		serviceDetails.HTTPPort = int32(config.DevModePort)
+	}
+
+	url := fmt.Sprintf("http://%s:%d", serviceDetails.ClusterIP, serviceDetails.HTTPPort)
+	return url, nil
 }
 
 func (app *App) AttachNamespace(next func(http.ResponseWriter, *http.Request, httprouter.Params)) httprouter.Handle {

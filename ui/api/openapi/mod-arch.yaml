@@ -137,7 +137,7 @@ paths:
       operationId: patchModel
       summary: Update a specific model
       description: Updates an existing Ollama model with partial data.
-  /api/v1/generate/{modelName}:
+  /api/v1/generate/{modelId}:
     summary: Path used to generate model completions.
     description: >-
       The REST endpoint/path used to generate a response for a given prompt with a provided model.

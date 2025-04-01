@@ -88,7 +88,7 @@ const SimpleChat: React.FC<SimpleChatProps> = ({ isVisible, model }) => {
     // Check if API is available before making the call
     if (apiAvailable) {
       api
-        .generate({}, request)
+        .generate({}, modelVersion, request)
         .then((response) => {
           // Update messages with API response
           const updatedMessages = [...newMessages];

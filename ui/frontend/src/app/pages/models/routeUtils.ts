@@ -2,7 +2,7 @@ import { CatalogModel } from '~/app/concepts/modelCatalog/types';
 import { ModelDetailsRouteParams } from './const';
 import { encodeParams, getTagFromModel } from './utils';
 
-export const modelUrl = (): string => `/models`;
+export const modelUrl = (): string => `/ollama`;
 
 export const modelDetailsUrl = (params: ModelDetailsRouteParams): string => {
   const { sourceName = '', repositoryName = '', modelName = '', tag = '' } = encodeParams(params);
