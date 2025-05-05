@@ -33,7 +33,7 @@ jobs:
         run: make clean
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
           version: v1.63.4
           working-directory: /ui/bff/
